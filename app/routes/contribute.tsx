@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useState, type FormEvent } from "react";
 
+import { postJson } from "../lib/api";
 import type { Route } from "./+types/contribute";
 
 export function meta({}: Route.MetaArgs) {
@@ -15,17 +16,47 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Contribute() {
-  const [creationVideo, setCreationVideo] = useState<File | null>(null);
-  const previewUrl = useMemo(
-    () => (creationVideo ? URL.createObjectURL(creationVideo) : null),
-    [creationVideo]
-  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [statusKind, setStatusKind] = useState<"success" | "error" | null>(null);
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatusMessage(null);
+    setStatusKind(null);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      title: String(formData.get("title") || "").trim(),
+      artist_name: String(formData.get("artist_name") || "").trim(),
+      description_text: String(formData.get("description_text") || "").trim(),
+      alt_text_description: String(formData.get("alt_text_description") || "").trim(),
+      artwork_image_url: String(formData.get("artwork_image_url") || "").trim(),
+      audio_url: String(formData.get("audio_url") || "").trim() || null,
+      video_url: String(formData.get("video_url") || "").trim() || null,
+      ar_asset_url_ios: String(formData.get("ar_asset_url_ios") || "").trim(),
+      ar_asset_url_android: String(formData.get("ar_asset_url_android") || "").trim(),
     };
-  }, [previewUrl]);
+
+    setIsSubmitting(true);
+    try {
+      await postJson("/contributions", payload);
+      form.reset();
+      setStatusKind("success");
+      setStatusMessage("Contribution saved to database.");
+    } catch (error) {
+      setStatusKind("error");
+      setStatusMessage(
+        error instanceof Error
+          ? error.message
+          : "Contribution failed. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <main className="site-shell">
@@ -68,40 +99,84 @@ export default function Contribute() {
 
       <section className="panel">
         <h2>Your Contribution</h2>
-        <form className="contribution-form" action="#" method="post">
-          <label htmlFor="name">Name</label>
-          <input id="name" name="name" type="text" autoComplete="name" />
+        <form className="contribution-form" onSubmit={handleSubmit}>
+          <label htmlFor="title">Title</label>
+          <input id="title" name="title" type="text" required />
 
-          <label htmlFor="email">Email</label>
-          <input id="email" name="email" type="email" autoComplete="email" />
+          <label htmlFor="artist_name">Artist Name</label>
+          <input id="artist_name" name="artist_name" type="text" required />
 
-          <label htmlFor="contribution">Contribution Summary</label>
-          <textarea id="contribution" name="contribution" rows={6} />
+          <label htmlFor="description_text">Description Text</label>
+          <textarea id="description_text" name="description_text" rows={5} required />
 
-          <label htmlFor="creationVideo">Creation Process Video (Optional)</label>
-          <input
-            id="creationVideo"
-            name="creationVideo"
-            type="file"
-            accept="video/*"
-            onChange={(event) =>
-              setCreationVideo(event.currentTarget.files?.[0] ?? null)
-            }
+          <label htmlFor="alt_text_description">Alt Text Description</label>
+          <textarea
+            id="alt_text_description"
+            name="alt_text_description"
+            rows={4}
+            required
           />
+
+          <label htmlFor="artwork_image_url">Artwork Image URL</label>
+          <input
+            id="artwork_image_url"
+            name="artwork_image_url"
+            type="url"
+            placeholder="https://example.com/artwork.jpg"
+            required
+          />
+
+          <label htmlFor="audio_url">Audio URL (Optional)</label>
+          <input
+            id="audio_url"
+            name="audio_url"
+            type="url"
+            placeholder="https://example.com/audio.mp3"
+          />
+
+          <label htmlFor="video_url">Video URL (Optional)</label>
+          <input
+            id="video_url"
+            name="video_url"
+            type="url"
+            placeholder="https://example.com/video.mp4"
+          />
+
+          <label htmlFor="ar_asset_url_ios">AR Asset URL iOS (USDZ)</label>
+          <input
+            id="ar_asset_url_ios"
+            name="ar_asset_url_ios"
+            type="url"
+            placeholder="https://example.com/model.usdz"
+            required
+          />
+
+          <label htmlFor="ar_asset_url_android">AR Asset URL Android (GLB)</label>
+          <input
+            id="ar_asset_url_android"
+            name="ar_asset_url_android"
+            type="url"
+            placeholder="https://example.com/model.glb"
+            required
+          />
+
           <p className="field-note">
-            Upload a short video explaining how you created this contribution.
+            Required fields mirror the backend contribution schema.
           </p>
 
-          {previewUrl ? (
-            <div className="video-preview">
-              <h3>Creation Video Preview</h3>
-              <video controls preload="metadata" src={previewUrl} />
-            </div>
-          ) : null}
-
           <button type="submit" className="action action-primary">
-            Submit Contribution
+            {isSubmitting ? "Saving..." : "Submit Contribution"}
           </button>
+
+          {statusMessage ? (
+            <p
+              className={`form-status ${
+                statusKind === "success" ? "form-status-success" : "form-status-error"
+              }`}
+            >
+              {statusMessage}
+            </p>
+          ) : null}
         </form>
       </section>
     </main>
