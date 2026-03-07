@@ -1,5 +1,6 @@
 import {
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
   Outlet,
@@ -46,15 +47,17 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
+  let message = "Something went wrong";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
+  let statusCode: number | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    statusCode = error.status;
+    message = error.status === 404 ? "Page not found" : "Request failed";
     details =
       error.status === 404
-        ? "The requested page could not be found."
+        ? "The page you requested does not exist or was moved."
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
@@ -62,11 +65,29 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="error-shell">
+      <section className="error-card" role="alert" aria-live="assertive">
+        <p className="error-kicker">
+          {statusCode ? `Error ${statusCode}` : "Application Error"}
+        </p>
+        <h1>{message}</h1>
+        <p>{details}</p>
+
+        <div className="error-actions">
+          <Link to="/" className="action action-primary">
+            Go To Home
+          </Link>
+          <Link to="/upload" className="action error-action">
+            Go To Upload
+          </Link>
+          <Link to="/contribute" className="action error-action">
+            Go To Contribute
+          </Link>
+        </div>
+      </section>
+
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className="error-stack">
           <code>{stack}</code>
         </pre>
       )}

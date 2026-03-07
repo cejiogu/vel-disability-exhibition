@@ -1,4 +1,5 @@
 import type { Route } from "./+types/home";
+import { Link, NavLink } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,6 +15,26 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   return (
     <main className="site-shell">
+      <nav className="site-nav" aria-label="Primary">
+        <Link to="/" className="logo-home" aria-label="Go to home page">
+          <img src="/vel-logo.jpeg" alt="Virtual Embodiment Lab logo" />
+        </Link>
+        <div className="site-nav-links">
+          <NavLink to="/" end className="nav-link">
+            Home
+          </NavLink>
+          <NavLink to="/upload" className="nav-link">
+            Upload
+          </NavLink>
+          <NavLink to="/contribute" className="nav-link">
+            Contribute
+          </NavLink>
+          <NavLink to="/scan" className="nav-link nav-link-scan">
+            Scan
+          </NavLink>
+        </div>
+      </nav>
+
       <header className="hero">
         <p className="eyebrow">Virtual Embodiment Lab</p>
         <h1>Disability Exhibition Contribution Website</h1>
@@ -21,15 +42,52 @@ export default function Home() {
           Share stories, media, and reflections for an exhibition designed with
           readable contrast, reduced glare, and inclusive visual choices.
         </p>
+        <div className="mode-cards">
+          <article className="mode-card">
+            <h2>Upload</h2>
+            <p>
+              Take a picture of your artwork that you just drew and upload it to
+              the website to view it in AR around the exhibition.
+            </p>
+          </article>
+          <article className="mode-card">
+            <h2>Contribute</h2>
+            <p>
+              This is for submitting contributions before the exhibition to
+              display to users and attendees so they can learn about the unique
+              experiences of different disabilities.
+            </p>
+          </article>
+        </div>
         <div className="hero-actions">
-          <a href="#contribute" className="action action-primary">
-            Start A Contribution
-          </a>
-          <a href="#guidelines" className="action action-secondary">
-            Read Accessibility Guidelines
-          </a>
+          <Link to="/contribute" className="action action-primary">
+            Start Contribution
+          </Link>
+          <Link to="/upload" className="action action-secondary">
+            Go To Upload
+          </Link>
         </div>
       </header>
+
+      <section className="panel">
+        <h2>Contributing To The Exhibition</h2>
+        <p>
+          We welcome personal stories, interviews, photos, audio, and documents
+          that reflect disability experiences and accessibility insights.
+        </p>
+        <p>
+          Write your narrative on the Contribute page, then use the Upload page
+          to attach media and supporting materials.
+        </p>
+        <div className="hero-actions">
+          <Link to="/contribute" className="action action-primary">
+            Go To Contribute
+          </Link>
+          <Link to="/upload" className="action action-secondary action-secondary-light">
+            Go To Upload
+          </Link>
+        </div>
+      </section>
 
       <section id="guidelines" className="panel">
         <h2>Design Principles Used On This Page</h2>
@@ -79,26 +137,14 @@ export default function Home() {
         </article>
       </section>
 
-      <section id="contribute" className="panel panel-strong">
-        <h2>Contribute To The Exhibition</h2>
+      <section className="panel scan-cta">
+        <h2>Scan A QR Code</h2>
         <p>
-          Submit lived-experience narratives, sensory notes, or media that
-          supports disability-centered storytelling.
+          Use your camera to scan exhibition QR codes and open AR experiences.
         </p>
-        <form className="contribution-form" action="#" method="post">
-          <label htmlFor="name">Name</label>
-          <input id="name" name="name" type="text" autoComplete="name" />
-
-          <label htmlFor="email">Email</label>
-          <input id="email" name="email" type="email" autoComplete="email" />
-
-          <label htmlFor="contribution">Contribution Summary</label>
-          <textarea id="contribution" name="contribution" rows={5} />
-
-          <button type="submit" className="action action-primary">
-            Submit Contribution
-          </button>
-        </form>
+        <Link to="/scan" className="action action-primary">
+          Open QR Scanner
+        </Link>
       </section>
     </main>
   );
