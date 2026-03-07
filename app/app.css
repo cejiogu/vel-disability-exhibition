@@ -1,15 +1,209 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+:root {
+  --bg-soft: #f5f1dc;
+  --bg-panel: #fffbee;
+  --bg-deep: #1d1e22;
+  --text-main: #17181c;
+  --text-muted: #343742;
+  --text-on-dark: #f3f3f6;
+  --border: #2f3138;
+  --accent-gold: #f0b429;
+  --accent-orange: #e57a22;
+  --accent-red: #c83f3f;
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  margin: 0;
+  font-family: "Atkinson Hyperlegible Next", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top right, #fff8d9 0%, var(--bg-soft) 55%);
+  color: var(--text-main);
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+* {
+  box-sizing: border-box;
+}
+
+.site-shell {
+  width: min(960px, 92vw);
+  margin: 0 auto;
+  padding: 3rem 0 4rem;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.hero {
+  background: var(--bg-deep);
+  color: var(--text-on-dark);
+  border-radius: 1rem;
+  padding: 2.1rem;
+  border: 4px solid var(--accent-gold);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  color: #ffe99f;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 0.7rem;
+  line-height: 1.16;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+}
+
+p,
+li,
+label,
+input,
+textarea,
+button,
+a {
+  font-size: 1rem;
+}
+
+.lede {
+  max-width: 62ch;
+  color: #e7e8ee;
+}
+
+.hero-actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 2px solid #7f7462;
+  border-radius: 0.8rem;
+  padding: 1.1rem;
+  color: var(--text-main);
+}
+
+.grid-two {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.action {
+  text-decoration: none;
+  border-radius: 0.5rem;
+  padding: 0.7rem 1rem;
+  display: inline-block;
+  font-weight: 800;
+  border: 2px solid transparent;
+}
+
+.action-primary {
+  background: var(--accent-gold);
+  color: #17181c;
+}
+
+.action-secondary {
+  background: transparent;
+  color: var(--text-on-dark);
+  border-color: #bfc2ce;
+}
+
+.action:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #1761ff;
+  outline-offset: 2px;
+}
+
+.palette,
+.object-demos {
+  margin-top: 0.85rem;
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.chip,
+.marker {
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.chip-cream {
+  background: #efe7bd;
+  color: #16171b;
+}
+
+.chip-gray {
+  background: #e4e4e6;
+  color: #25272f;
+}
+
+.chip-dark {
+  background: #2b2f36;
+  color: #f3f3f5;
+}
+
+.marker-yellow {
+  background: #f1c92b;
+  color: #17181c;
+}
+
+.marker-orange {
+  background: var(--accent-orange);
+  color: #121212;
+}
+
+.marker-red {
+  background: var(--accent-red);
+  color: #f7f7f7;
+}
+
+.panel-strong {
+  background: #1f2127;
+  color: var(--text-on-dark);
+  border-color: var(--accent-orange);
+}
+
+.panel-strong p {
+  color: #d9dce8;
+}
+
+.contribution-form {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+input,
+textarea {
+  background: #fcfcff;
+  color: #1a1a20;
+  border: 2px solid #6b6f80;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.65rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+@media (max-width: 680px) {
+  .site-shell {
+    padding-top: 1.25rem;
+  }
+
+  .hero {
+    padding: 1.35rem;
   }
 }
