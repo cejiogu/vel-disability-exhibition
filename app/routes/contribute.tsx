@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router";
 import { useState, type FormEvent } from "react";
 
-import { postJson } from "../lib/api";
+import { postFormData } from "../lib/api";
 import type { Route } from "./+types/contribute";
 
 export function meta({}: Route.MetaArgs) {
@@ -27,22 +27,17 @@ export default function Contribute() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const selectedImage = formData.get("artwork_image");
 
-    const payload = {
-      title: String(formData.get("title") || "").trim(),
-      artist_name: String(formData.get("artist_name") || "").trim(),
-      description_text: String(formData.get("description_text") || "").trim(),
-      alt_text_description: String(formData.get("alt_text_description") || "").trim(),
-      artwork_image_url: String(formData.get("artwork_image_url") || "").trim(),
-      audio_url: String(formData.get("audio_url") || "").trim() || null,
-      video_url: String(formData.get("video_url") || "").trim() || null,
-      ar_asset_url_ios: String(formData.get("ar_asset_url_ios") || "").trim(),
-      ar_asset_url_android: String(formData.get("ar_asset_url_android") || "").trim(),
-    };
+    if (!(selectedImage instanceof File) || !selectedImage.size) {
+      setStatusKind("error");
+      setStatusMessage("Please upload an image before submitting.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      await postJson("/contributions", payload);
+      await postFormData("/contributions", formData);
       form.reset();
       setStatusKind("success");
       setStatusMessage("Contribution saved to database.");
@@ -117,52 +112,30 @@ export default function Contribute() {
             required
           />
 
-          <label htmlFor="artwork_image_url">Artwork Image URL</label>
+          <label htmlFor="artwork_image">Artwork Image Upload</label>
           <input
-            id="artwork_image_url"
-            name="artwork_image_url"
-            type="url"
-            placeholder="https://example.com/artwork.jpg"
+            id="artwork_image"
+            name="artwork_image"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
             required
           />
 
-          <label htmlFor="audio_url">Audio URL (Optional)</label>
+          <label htmlFor="audio_file">Audio Upload (Optional)</label>
           <input
-            id="audio_url"
-            name="audio_url"
-            type="url"
-            placeholder="https://example.com/audio.mp3"
+            id="audio_file"
+            name="audio_file"
+            type="file"
+            accept="audio/*"
           />
 
-          <label htmlFor="video_url">Video URL (Optional)</label>
+          <label htmlFor="video_file">Video Upload (Optional)</label>
           <input
-            id="video_url"
-            name="video_url"
-            type="url"
-            placeholder="https://example.com/video.mp4"
+            id="video_file"
+            name="video_file"
+            type="file"
+            accept="video/*"
           />
-
-          <label htmlFor="ar_asset_url_ios">AR Asset URL iOS (USDZ)</label>
-          <input
-            id="ar_asset_url_ios"
-            name="ar_asset_url_ios"
-            type="url"
-            placeholder="https://example.com/model.usdz"
-            required
-          />
-
-          <label htmlFor="ar_asset_url_android">AR Asset URL Android (GLB)</label>
-          <input
-            id="ar_asset_url_android"
-            name="ar_asset_url_android"
-            type="url"
-            placeholder="https://example.com/model.glb"
-            required
-          />
-
-          <p className="field-note">
-            Required fields mirror the backend contribution schema.
-          </p>
 
           <button type="submit" className="action action-primary">
             {isSubmitting ? "Saving..." : "Submit Contribution"}

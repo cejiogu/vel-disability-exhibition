@@ -22,3 +22,20 @@ export async function postJson<T>(
 
   return data as T;
 }
+
+export async function postFormData<T>(path: string, payload: FormData): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    body: payload,
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const message =
+      (data as { error?: string }).error || "Request failed. Please try again.";
+    throw new Error(message);
+  }
+
+  return data as T;
+}

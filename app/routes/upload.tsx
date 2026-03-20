@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router";
 import { useState, type FormEvent } from "react";
 
-import { postJson } from "../lib/api";
+import { postFormData } from "../lib/api";
 import type { Route } from "./+types/upload";
 
 export function meta({}: Route.MetaArgs) {
@@ -27,19 +27,17 @@ export default function Upload() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const selectedImage = formData.get("artwork_image");
 
-    const payload = {
-      name: String(formData.get("name") || "").trim(),
-      artwork_image_url: String(formData.get("artwork_image_url") || "").trim(),
-      ar_asset_url_ios: String(formData.get("ar_asset_url_ios") || "").trim() || null,
-      ar_asset_url_android:
-        String(formData.get("ar_asset_url_android") || "").trim() || null,
-      email: String(formData.get("email") || "").trim() || null,
-    };
+    if (!(selectedImage instanceof File) || !selectedImage.size) {
+      setStatusKind("error");
+      setStatusMessage("Please choose an image file before submitting.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      await postJson("/uploads", payload);
+      await postFormData("/uploads", formData);
       form.reset();
       setStatusKind("success");
       setStatusMessage("Upload saved to database.");
@@ -91,36 +89,24 @@ export default function Upload() {
         <h2>Your Upload</h2>
         <form className="contribution-form" onSubmit={handleSubmit}>
           <label htmlFor="name">Name</label>
-          <input id="name" name="name" type="text" autoComplete="name" required />
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            required
+          />
 
           <label htmlFor="email">Email</label>
           <input id="email" name="email" type="email" autoComplete="email" />
 
-          <label htmlFor="artwork_image_url">Artwork Image URL</label>
+          <label htmlFor="artwork_image">Upload Image (JPEG or PNG)</label>
           <input
-            id="artwork_image_url"
-            name="artwork_image_url"
-            type="url"
-            placeholder="https://example.com/artwork.jpg"
+            id="artwork_image"
+            name="artwork_image"
+            type="file"
+            accept="image/jpeg,image/png"
             required
-          />
-
-          <label htmlFor="ar_asset_url_ios">AR Asset URL iOS (USDZ, optional)</label>
-          <input
-            id="ar_asset_url_ios"
-            name="ar_asset_url_ios"
-            type="url"
-            placeholder="https://example.com/model.usdz"
-          />
-
-          <label htmlFor="ar_asset_url_android">
-            AR Asset URL Android (GLB, optional)
-          </label>
-          <input
-            id="ar_asset_url_android"
-            name="ar_asset_url_android"
-            type="url"
-            placeholder="https://example.com/model.glb"
           />
 
           <button type="submit" className="action action-primary">
