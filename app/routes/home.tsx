@@ -1,5 +1,8 @@
 import type { Route } from "./+types/home";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
+
+import { SiteNav } from "../components/site-nav";
+import { CONTRIBUTE_ENABLED } from "../lib/feature-flags";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,56 +18,45 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   return (
     <main className="site-shell">
-      <nav className="site-nav" aria-label="Primary">
-        <Link to="/" className="logo-home" aria-label="Go to home page">
-          <img src="/vel-logo.jpeg" alt="Virtual Embodiment Lab logo" />
-        </Link>
-        <div className="site-nav-links">
-          <NavLink to="/" end className="nav-link">
-            Home
-          </NavLink>
-          <NavLink to="/upload" className="nav-link">
-            Upload
-          </NavLink>
-          <NavLink to="/contribute" className="nav-link">
-            Contribute
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan">
-            Scan
-          </NavLink>
-        </div>
-      </nav>
+      <SiteNav />
 
       <header className="hero">
         <p className="eyebrow">Virtual Embodiment Lab</p>
         <h1>Disability Exhibition Contribution Website</h1>
         <p className="lede">
-          Share stories, media, and reflections for an exhibition designed with
-          readable contrast, reduced glare, and inclusive visual choices.
+          Visitors scan exhibition QR codes with their phone camera. Contributors
+          use this site before and during the exhibition to share work, context,
+          and supporting materials.
         </p>
         <div className="mode-cards">
           <article className="mode-card">
             <h2>Upload</h2>
             <p>
-              Take a picture of your artwork that you just drew and upload it to
-              the website to view it in AR around the exhibition.
+              Upload is for work created during the exhibition. Add the artwork
+              file and a name so it can be prepared for display.
             </p>
           </article>
           <article className="mode-card">
             <h2>Contribute</h2>
             <p>
-              This is for submitting contributions before the exhibition to
-              display to users and attendees so they can learn about the unique
-              experiences of different disabilities.
+              Contribute is for pre-exhibition submissions. Share the story,
+              context, and accessibility details that help represent the work in
+              the exhibition.
             </p>
           </article>
         </div>
         <div className="hero-actions">
-          <Link to="/contribute" className="action action-primary">
-            Start Contribution
-          </Link>
+          {CONTRIBUTE_ENABLED ? (
+            <Link to="/contribute" className="action action-primary">
+              Contribute Before The Exhibition
+            </Link>
+          ) : (
+            <span className="action action-disabled" aria-disabled="true">
+              Contributions Are Currently Closed
+            </span>
+          )}
           <Link to="/upload" className="action action-secondary">
-            Go To Upload
+            Upload Work Made On Site
           </Link>
         </div>
       </header>
@@ -72,17 +64,23 @@ export default function Home() {
       <section className="panel">
         <h2>Contributing To The Exhibition</h2>
         <p>
-          We welcome personal stories, interviews, photos, audio, and documents
-          that reflect disability experiences and accessibility insights.
+          Before the exhibition begins, contributors can submit the written and
+          reflective context that helps visitors understand a work more deeply.
         </p>
         <p>
-          Write your narrative on the Contribute page, then use the Upload page
-          to attach media and supporting materials.
+          During the exhibition itself, Upload remains available for newly
+          created work and supporting materials gathered on site.
         </p>
         <div className="hero-actions">
-          <Link to="/contribute" className="action action-primary">
-            Go To Contribute
-          </Link>
+          {CONTRIBUTE_ENABLED ? (
+            <Link to="/contribute" className="action action-primary">
+              Go To Contribute
+            </Link>
+          ) : (
+            <span className="action action-disabled" aria-disabled="true">
+              Contribute Unavailable During Exhibition
+            </span>
+          )}
           <Link to="/upload" className="action action-secondary action-secondary-light">
             Go To Upload
           </Link>
@@ -135,16 +133,6 @@ export default function Home() {
             <span className="marker marker-red">Safety Label</span>
           </div>
         </article>
-      </section>
-
-      <section className="panel scan-cta">
-        <h2>Scan A QR Code</h2>
-        <p>
-          Use your camera to scan exhibition QR codes and open AR experiences.
-        </p>
-        <Link to="/scan" className="action action-primary">
-          Open QR Scanner
-        </Link>
       </section>
     </main>
   );

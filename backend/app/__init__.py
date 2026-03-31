@@ -5,7 +5,7 @@ from flask_cors import CORS
 from .config import Config
 from .extensions import db, migrate
 from . import models
-from .routes import api
+from .routes import api, media
 
 
 def create_app():
@@ -16,9 +16,11 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     app.register_blueprint(api)
+    app.register_blueprint(media)
 
     @app.cli.command("init-db")
     def init_db():
+        app.config["UPLOAD_FOLDER"].mkdir(parents=True, exist_ok=True)
         db.create_all()
         click.echo("Database tables created.")
 

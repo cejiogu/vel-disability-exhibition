@@ -1,7 +1,9 @@
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import { useState, type FormEvent } from "react";
 
-import { postJson } from "../lib/api";
+import { SiteNav } from "../components/site-nav";
+import { CONTRIBUTE_ENABLED } from "../lib/feature-flags";
+import { postForm } from "../lib/api";
 import type { Route } from "./+types/contribute";
 
 export function meta({}: Route.MetaArgs) {
@@ -27,22 +29,28 @@ export default function Contribute() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const textFields = [
+      "title",
+      "artist_name",
+      "medium",
+      "disability_experience_context",
+      "description_text",
+      "alt_text_description",
+      "accessibility_notes",
+    ] as const;
 
-    const payload = {
-      title: String(formData.get("title") || "").trim(),
-      artist_name: String(formData.get("artist_name") || "").trim(),
-      description_text: String(formData.get("description_text") || "").trim(),
-      alt_text_description: String(formData.get("alt_text_description") || "").trim(),
-      artwork_image_url: String(formData.get("artwork_image_url") || "").trim(),
-      audio_url: String(formData.get("audio_url") || "").trim() || null,
-      video_url: String(formData.get("video_url") || "").trim() || null,
-      ar_asset_url_ios: String(formData.get("ar_asset_url_ios") || "").trim(),
-      ar_asset_url_android: String(formData.get("ar_asset_url_android") || "").trim(),
-    };
+    textFields.forEach((field) => {
+      const value = String(formData.get(field) || "").trim();
+      if (value) {
+        formData.set(field, value);
+      } else {
+        formData.delete(field);
+      }
+    });
 
     setIsSubmitting(true);
     try {
-      await postJson("/contributions", payload);
+      await postForm("/contributions", formData);
       form.reset();
       setStatusKind("success");
       setStatusMessage("Contribution saved to database.");
@@ -60,32 +68,14 @@ export default function Contribute() {
 
   return (
     <main className="site-shell">
-      <nav className="site-nav" aria-label="Primary">
-        <Link to="/" className="logo-home" aria-label="Go to home page">
-          <img src="/vel-logo.jpeg" alt="Virtual Embodiment Lab logo" />
-        </Link>
-        <div className="site-nav-links">
-          <NavLink to="/" end className="nav-link">
-            Home
-          </NavLink>
-          <NavLink to="/upload" className="nav-link">
-            Upload
-          </NavLink>
-          <NavLink to="/contribute" className="nav-link">
-            Contribute
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan">
-            Scan
-          </NavLink>
-        </div>
-      </nav>
+      <SiteNav />
 
       <header className="panel panel-strong">
         <p className="eyebrow">Contribution Form</p>
         <h1>Contribute To The Exhibition</h1>
         <p>
-          Share your perspective and context. Use the Upload tab for supporting
-          files.
+          Contribute is the pre-exhibition form for people who want their work
+          represented in the exhibition. Use Upload later for work created on site.
         </p>
         <div className="hero-actions">
           <Link to="/upload" className="action action-primary">
@@ -99,85 +89,85 @@ export default function Contribute() {
 
       <section className="panel">
         <h2>Your Contribution</h2>
-        <form className="contribution-form" onSubmit={handleSubmit}>
-          <label htmlFor="title">Title</label>
-          <input id="title" name="title" type="text" required />
-
-          <label htmlFor="artist_name">Artist Name</label>
-          <input id="artist_name" name="artist_name" type="text" required />
-
-          <label htmlFor="description_text">Description Text</label>
-          <textarea id="description_text" name="description_text" rows={5} required />
-
-          <label htmlFor="alt_text_description">Alt Text Description</label>
-          <textarea
-            id="alt_text_description"
-            name="alt_text_description"
-            rows={4}
-            required
-          />
-
-          <label htmlFor="artwork_image_url">Artwork Image URL</label>
-          <input
-            id="artwork_image_url"
-            name="artwork_image_url"
-            type="url"
-            placeholder="https://example.com/artwork.jpg"
-            required
-          />
-
-          <label htmlFor="audio_url">Audio URL (Optional)</label>
-          <input
-            id="audio_url"
-            name="audio_url"
-            type="url"
-            placeholder="https://example.com/audio.mp3"
-          />
-
-          <label htmlFor="video_url">Video URL (Optional)</label>
-          <input
-            id="video_url"
-            name="video_url"
-            type="url"
-            placeholder="https://example.com/video.mp4"
-          />
-
-          <label htmlFor="ar_asset_url_ios">AR Asset URL iOS (USDZ)</label>
-          <input
-            id="ar_asset_url_ios"
-            name="ar_asset_url_ios"
-            type="url"
-            placeholder="https://example.com/model.usdz"
-            required
-          />
-
-          <label htmlFor="ar_asset_url_android">AR Asset URL Android (GLB)</label>
-          <input
-            id="ar_asset_url_android"
-            name="ar_asset_url_android"
-            type="url"
-            placeholder="https://example.com/model.glb"
-            required
-          />
-
-          <p className="field-note">
-            Required fields mirror the backend contribution schema.
-          </p>
-
-          <button type="submit" className="action action-primary">
-            {isSubmitting ? "Saving..." : "Submit Contribution"}
-          </button>
-
-          {statusMessage ? (
-            <p
-              className={`form-status ${
-                statusKind === "success" ? "form-status-success" : "form-status-error"
-              }`}
-            >
-              {statusMessage}
+        {!CONTRIBUTE_ENABLED ? (
+          <div className="paused-state" role="status">
+            <h3>Contributions Are Currently Closed</h3>
+            <p>
+              The exhibition is underway, so narrative submissions are paused for
+              now. Upload remains available for work created on site.
             </p>
-          ) : null}
-        </form>
+          </div>
+        ) : (
+          <form className="contribution-form" onSubmit={handleSubmit}>
+            <label htmlFor="title">Title</label>
+            <input id="title" name="title" type="text" required />
+
+            <label htmlFor="artist_name">Artist / Contributor Name</label>
+            <input id="artist_name" name="artist_name" type="text" required />
+
+            <label htmlFor="medium">Medium (Optional)</label>
+            <input id="medium" name="medium" type="text" />
+
+            <label htmlFor="disability_experience_context">
+              Disability Experience Context (Optional)
+            </label>
+            <textarea
+              id="disability_experience_context"
+              name="disability_experience_context"
+              rows={3}
+            />
+
+            <label htmlFor="description_text">Description Text</label>
+            <textarea
+              id="description_text"
+              name="description_text"
+              rows={5}
+              required
+            />
+
+            <label htmlFor="alt_text_description">Alt Text Description</label>
+            <textarea
+              id="alt_text_description"
+              name="alt_text_description"
+              rows={4}
+              required
+            />
+
+            <label htmlFor="accessibility_notes">Accessibility Notes (Optional)</label>
+            <textarea
+              id="accessibility_notes"
+              name="accessibility_notes"
+              rows={3}
+            />
+
+            <label htmlFor="audio_file">Audio File (Optional)</label>
+            <input id="audio_file" name="audio_file" type="file" accept="audio/*" />
+
+            <label htmlFor="video_file">Video File (Optional)</label>
+            <input id="video_file" name="video_file" type="file" accept="video/*" />
+
+            <p className="field-note">
+              This form is for the story and context surrounding a contribution.
+              Media uploads are optional and AR assets are handled separately.
+            </p>
+
+            <button type="submit" className="action action-primary">
+              {isSubmitting ? "Saving..." : "Submit Contribution"}
+            </button>
+
+            {statusMessage ? (
+              <p
+                className={`form-status ${
+                  statusKind === "success"
+                    ? "form-status-success"
+                    : "form-status-error"
+                }`}
+              >
+                {statusMessage}
+              </p>
+            ) : null}
+          </form>
+        )}
       </section>
     </main>
   );
