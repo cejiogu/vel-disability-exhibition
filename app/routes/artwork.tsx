@@ -36,6 +36,7 @@ export default function Artwork() {
   const [record, setRecord] = useState<ContributionRecord | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAudioVisible, setIsAudioVisible] = useState(false);
 
   useEffect(() => {
     let isCancelled = false;
@@ -50,6 +51,7 @@ export default function Artwork() {
       setIsLoading(true);
       setErrorMessage(null);
       setRecord(null);
+      setIsAudioVisible(false);
 
       try {
         const data = await fetchJson<ContributionRecord>(`/contributions/${id}`);
@@ -158,12 +160,50 @@ export default function Artwork() {
             </div>
           </section>
 
+          <section className="panel audio-description-section">
+            <h2>Audio Description</h2>
+            {audioUrl ? (
+              <>
+                <button
+                  type="button"
+                  className="action action-primary"
+                  aria-label={
+                    isAudioVisible
+                      ? "Hide the audio description player"
+                      : "Listen to the audio description"
+                  }
+                  onClick={() => setIsAudioVisible((value) => !value)}
+                >
+                  {isAudioVisible ? "Hide Audio" : "Listen to Description"}
+                </button>
+                {isAudioVisible ? (
+                  <audio
+                    controls
+                    className="artwork-media artwork-audio-player"
+                    aria-label="Audio description player"
+                  >
+                    <source src={audioUrl} />
+                  </audio>
+                ) : null}
+              </>
+            ) : (
+              <p className="field-note">
+                Audio description not available for this contribution
+              </p>
+            )}
+          </section>
+
           <section className="panel">
-            <h2>Disability Experience Context</h2>
-            <p>
-              {record.disability_experience_context ||
-                "Context for this work will be added as part of the exhibition narrative."}
-            </p>
+            <h2>Supporting Media</h2>
+            {videoUrl ? (
+              <video controls className="artwork-media">
+                <source src={videoUrl} />
+              </video>
+            ) : (
+              <p className="field-note">
+                No supporting video is available for this contribution.
+              </p>
+            )}
           </section>
 
           <section className="panel">
@@ -182,23 +222,11 @@ export default function Artwork() {
             </article>
 
             <article className="panel">
-              <h3>Supporting Media</h3>
-              {audioUrl ? (
-                <audio controls className="artwork-media">
-                  <source src={audioUrl} />
-                </audio>
-              ) : (
-                <p>No audio attachment is available for this work.</p>
-              )}
-              {videoUrl ? (
-                <video controls className="artwork-media">
-                  <source src={videoUrl} />
-                </video>
-              ) : (
-                <p className="field-note">
-                  No video attachment is available for this contribution.
-                </p>
-              )}
+              <h3>Disability Experience Context</h3>
+              <p>
+                {record.disability_experience_context ||
+                  "Context for this work will be added as part of the exhibition narrative."}
+              </p>
             </article>
           </section>
         </>

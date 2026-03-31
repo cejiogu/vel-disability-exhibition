@@ -417,6 +417,15 @@ textarea:focus-visible {
   margin-top: 0.6rem;
 }
 
+.audio-description-section {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.artwork-audio-player {
+  margin-top: 0.2rem;
+}
+
 input,
 textarea {
   background: #fcfcff;
