@@ -1,11 +1,12 @@
 from pathlib import Path
+from typing import Optional
 from uuid import uuid4
 
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 
-def save_uploaded_file(upload_root: Path, file: FileStorage, folder: str) -> str | None:
+def save_uploaded_file(upload_root: Path, file: FileStorage, folder: str) -> Optional[str]:
     if not file or not file.filename:
         return None
 
