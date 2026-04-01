@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 
+import { AdjustableTextSection } from "../components/adjustable-text-section";
 import { SiteNav } from "../components/site-nav";
 import { fetchJson, resolveMediaUrl } from "../lib/api";
 import type { Route } from "./+types/artwork";
@@ -160,9 +161,8 @@ export default function Artwork() {
             </div>
           </section>
 
-          <section className="panel audio-description-section">
-            <h2>Audio Description</h2>
-            {audioUrl ? (
+          <AdjustableTextSection title="Audio Description" className="panel audio-description-section">
+            {/* {audioUrl ? ( */}
               <>
                 <button
                   type="button"
@@ -186,15 +186,9 @@ export default function Artwork() {
                   </audio>
                 ) : null}
               </>
-            ) : (
-              <p className="field-note">
-                Audio description not available for this contribution
-              </p>
-            )}
-          </section>
+          </AdjustableTextSection>
 
-          <section className="panel">
-            <h2>Supporting Media</h2>
+          <AdjustableTextSection title="Supporting Media" className="panel">
             {videoUrl ? (
               <video controls className="artwork-media">
                 <source src={videoUrl} />
@@ -204,30 +198,31 @@ export default function Artwork() {
                 No supporting video is available for this contribution.
               </p>
             )}
-          </section>
+          </AdjustableTextSection>
 
-          <section className="panel">
-            <h2>Description</h2>
+          <AdjustableTextSection title="Description" className="panel">
             <p>{record.description_text}</p>
-          </section>
+          </AdjustableTextSection>
 
           <section className="grid-two">
-            <article className="panel">
-              <h3>Accessibility Notes</h3>
+            <AdjustableTextSection title="Accessibility Notes" className="panel" as="article">
               <p>
                 {record.accessibility_notes ||
                   "No additional accessibility notes have been added yet."}
               </p>
               <p className="field-note">Alt text: {record.alt_text_description}</p>
-            </article>
+            </AdjustableTextSection>
 
-            <article className="panel">
-              <h3>Disability Experience Context</h3>
+            <AdjustableTextSection
+              title="Disability Experience Context"
+              className="panel"
+              as="article"
+            >
               <p>
                 {record.disability_experience_context ||
                   "Context for this work will be added as part of the exhibition narrative."}
               </p>
-            </article>
+            </AdjustableTextSection>
           </section>
         </>
       ) : null}

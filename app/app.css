@@ -170,6 +170,60 @@ a {
   color: var(--text-main);
 }
 
+.adjustable-text-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 0.7rem;
+}
+
+.text-size-controls {
+  display: flex;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.text-size-button {
+  min-width: 2.8rem;
+  min-height: 2.4rem;
+  border-radius: 999px;
+  border: 2px solid #7f7462;
+  background: #fff8dd;
+  color: #1d1f26;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.text-size-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.adjustable-text-body {
+  line-height: 1.7;
+}
+
+.size-step--2 {
+  font-size: 0.88rem;
+}
+
+.size-step--1 {
+  font-size: 0.95rem;
+}
+
+.size-step-0 {
+  font-size: 1rem;
+}
+
+.size-step-1 {
+  font-size: 1.08rem;
+}
+
+.size-step-2 {
+  font-size: 1.18rem;
+}
+
 .grid-two {
   display: grid;
   gap: 1rem;
@@ -417,6 +471,43 @@ textarea:focus-visible {
   margin-top: 0.6rem;
 }
 
+.artwork-list,
+.audio-stop-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.artwork-card,
+.audio-stop-card {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.artwork-card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0.7rem;
+  border: 2px solid #8f826c;
+}
+
+.artwork-card-placeholder {
+  aspect-ratio: 4 / 3;
+  border-radius: 0.7rem;
+  border: 2px solid #8f826c;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  background: #f5ecd0;
+  color: #4d4634;
+}
+
+.artwork-card-body {
+  display: grid;
+  gap: 0.55rem;
+}
+
 .audio-description-section {
   display: grid;
   gap: 0.7rem;
@@ -424,6 +515,28 @@ textarea:focus-visible {
 
 .artwork-audio-player {
   margin-top: 0.2rem;
+}
+
+.transcript-body {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.activity-placeholder {
+  padding: 1rem;
+}
+
+.activity-stage {
+  min-height: 260px;
+  border-radius: 0.8rem;
+  border: 2px dashed #8f826c;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1.2rem;
+  background:
+    radial-gradient(circle at top, rgba(255, 245, 197, 0.2), transparent 46%),
+    #f8f1d8;
 }
 
 input,

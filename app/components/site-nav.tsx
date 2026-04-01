@@ -12,6 +12,18 @@ export function SiteNav() {
         <NavLink to="/" end className="nav-link">
           Home
         </NavLink>
+        <NavLink to="/artwork" className="nav-link">
+          Browse Artwork
+        </NavLink>
+        <NavLink to="/audio" className="nav-link">
+          Audio Tour
+        </NavLink>
+        <NavLink to="/activity" className="nav-link">
+          Visitor Activity
+        </NavLink>
+        <NavLink to="/statement" className="nav-link">
+          Exhibition Statement
+        </NavLink>
         <NavLink to="/upload" className="nav-link">
           Upload
         </NavLink>
