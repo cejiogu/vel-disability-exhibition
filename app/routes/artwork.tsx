@@ -162,7 +162,7 @@ export default function Artwork() {
           </section>
 
           <AdjustableTextSection title="Audio Description" className="panel audio-description-section">
-            {/* {audioUrl ? ( */}
+            {audioUrl ? (
               <>
                 <button
                   type="button"
@@ -186,6 +186,11 @@ export default function Artwork() {
                   </audio>
                 ) : null}
               </>
+            ) : (
+              <p className="field-note">
+                No audio description is available for this contribution.
+              </p>
+            )}
           </AdjustableTextSection>
 
           <AdjustableTextSection title="Supporting Media" className="panel">
