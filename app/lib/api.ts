@@ -2,6 +2,9 @@ export const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ||
   "http://localhost:5000/api";
 
+console.log("Imported API_BASE_URL =", import.meta.env.VITE_API_BASE_URL);
+console.log("Built API_BASE_URL =", API_BASE_URL);
+
 export const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
 
 export async function fetchJson<T>(path: string): Promise<T> {
