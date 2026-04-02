@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import LargeBinary, func
 
 from .extensions import db
 
@@ -15,8 +15,10 @@ class Contribution(db.Model):
     alt_text_description = db.Column(db.Text, nullable=False)
     accessibility_notes = db.Column(db.Text, nullable=True)
     artwork_image_url = db.Column(db.Text, nullable=True)
-    audio_url = db.Column(db.Text, nullable=True)
-    video_url = db.Column(db.Text, nullable=True)
+    audio_data = db.Column(LargeBinary, nullable=True)
+    audio_mime_type = db.Column(db.String(255), nullable=True)
+    video_data = db.Column(LargeBinary, nullable=True)
+    video_mime_type = db.Column(db.String(255), nullable=True)
     ar_asset_url_ios = db.Column(db.Text, nullable=True)
     ar_asset_url_android = db.Column(db.Text, nullable=True)
     created_at = db.Column(
@@ -40,8 +42,12 @@ class Contribution(db.Model):
             "alt_text_description": self.alt_text_description,
             "accessibility_notes": self.accessibility_notes,
             "artwork_image_url": self.artwork_image_url,
-            "audio_url": self.audio_url,
-            "video_url": self.video_url,
+            "audio_url": (
+                f"/api/contributions/{self.id}/media/audio" if self.audio_data else None
+            ),
+            "video_url": (
+                f"/api/contributions/{self.id}/media/video" if self.video_data else None
+            ),
             "ar_asset_url_ios": self.ar_asset_url_ios,
             "ar_asset_url_android": self.ar_asset_url_android,
             "created_at": self.created_at.isoformat() if self.created_at else None,
@@ -54,7 +60,8 @@ class Upload(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    artwork_image_url = db.Column(db.Text, nullable=False)
+    artwork_image_data = db.Column(LargeBinary, nullable=False)
+    artwork_image_mime_type = db.Column(db.String(255), nullable=False)
     ar_asset_url_ios = db.Column(db.Text, nullable=True)
     ar_asset_url_android = db.Column(db.Text, nullable=True)
     email = db.Column(db.String(255), nullable=True)
@@ -66,7 +73,7 @@ class Upload(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "artwork_image_url": self.artwork_image_url,
+            "artwork_image_url": f"/api/uploads/{self.id}/media/artwork",
             "ar_asset_url_ios": self.ar_asset_url_ios,
             "ar_asset_url_android": self.ar_asset_url_android,
             "email": self.email,

@@ -1,13 +1,25 @@
-from pathlib import Path
+import mimetypes
+from typing import Optional, Tuple
 
-from flask import Blueprint, current_app, jsonify, request, send_from_directory
+from flask import Blueprint, Response, jsonify, request
+from werkzeug.datastructures import FileStorage
 
 from .extensions import db
 from .models import Contribution, Upload
-from .storage import save_uploaded_file
 
 api = Blueprint("api", __name__, url_prefix="/api")
-media = Blueprint("media", __name__)
+
+
+def _file_bytes_and_mime(
+    file: Optional[FileStorage],
+) -> Tuple[Optional[bytes], Optional[str]]:
+    if not file or not file.filename:
+        return None, None
+    data = file.read()
+    if not data:
+        return None, None
+    mime = file.mimetype or mimetypes.guess_type(file.filename)[0]
+    return data, mime or "application/octet-stream"
 
 
 @api.get("/health")
@@ -29,10 +41,31 @@ def get_contribution(contribution_id: int):
     return jsonify(record.to_dict())
 
 
+@api.get("/contributions/<int:contribution_id>/media/audio")
+def serve_contribution_audio(contribution_id: int):
+    record = Contribution.query.get(contribution_id)
+    if record is None or not record.audio_data:
+        return jsonify({"error": "Not found"}), 404
+    return Response(
+        record.audio_data,
+        mimetype=record.audio_mime_type or "application/octet-stream",
+    )
+
+
+@api.get("/contributions/<int:contribution_id>/media/video")
+def serve_contribution_video(contribution_id: int):
+    record = Contribution.query.get(contribution_id)
+    if record is None or not record.video_data:
+        return jsonify({"error": "Not found"}), 404
+    return Response(
+        record.video_data,
+        mimetype=record.video_mime_type or "application/octet-stream",
+    )
+
+
 @api.post("/contributions")
 def create_contribution():
     payload = request.form
-    upload_root = Path(current_app.config["UPLOAD_FOLDER"])
     required_fields = [
         "title",
         "artist_name",
@@ -47,6 +80,9 @@ def create_contribution():
             400,
         )
 
+    audio_data, audio_mime = _file_bytes_and_mime(request.files.get("audio_file"))
+    video_data, video_mime = _file_bytes_and_mime(request.files.get("video_file"))
+
     record = Contribution(
         title=payload["title"],
         artist_name=payload["artist_name"],
@@ -57,12 +93,10 @@ def create_contribution():
         alt_text_description=payload["alt_text_description"],
         accessibility_notes=payload.get("accessibility_notes") or None,
         artwork_image_url=None,
-        audio_url=save_uploaded_file(
-            upload_root, request.files.get("audio_file"), "contributions/audio"
-        ),
-        video_url=save_uploaded_file(
-            upload_root, request.files.get("video_file"), "contributions/video"
-        ),
+        audio_data=audio_data,
+        audio_mime_type=audio_mime,
+        video_data=video_data,
+        video_mime_type=video_mime,
         ar_asset_url_ios=None,
         ar_asset_url_android=None,
     )
@@ -77,19 +111,27 @@ def list_uploads():
     return jsonify([record.to_dict() for record in records])
 
 
+@api.get("/uploads/<int:upload_id>/media/artwork")
+def serve_upload_artwork(upload_id: int):
+    record = Upload.query.get(upload_id)
+    if record is None or not record.artwork_image_data:
+        return jsonify({"error": "Not found"}), 404
+    return Response(
+        record.artwork_image_data,
+        mimetype=record.artwork_image_mime_type or "application/octet-stream",
+    )
+
+
 @api.post("/uploads")
 def create_upload():
     payload = request.form
-    upload_root = Path(current_app.config["UPLOAD_FOLDER"])
-    artwork_image_url = save_uploaded_file(
-        upload_root, request.files.get("artwork_file"), "uploads/artwork"
-    )
+    image_data, image_mime = _file_bytes_and_mime(request.files.get("artwork_file"))
     required_fields = ["name"]
 
     missing = [field for field in required_fields if not payload.get(field)]
-    if missing or artwork_image_url is None:
+    if missing or image_data is None:
         error_payload = {"error": "Missing required fields", "missing_fields": missing}
-        if artwork_image_url is None:
+        if image_data is None:
             error_payload["missing_fields"] = [*missing, "artwork_file"]
         return (
             jsonify(error_payload),
@@ -98,7 +140,8 @@ def create_upload():
 
     record = Upload(
         name=payload["name"],
-        artwork_image_url=artwork_image_url,
+        artwork_image_data=image_data,
+        artwork_image_mime_type=image_mime or "application/octet-stream",
         ar_asset_url_ios=None,
         ar_asset_url_android=None,
         email=payload.get("email") or None,
@@ -106,8 +149,3 @@ def create_upload():
     db.session.add(record)
     db.session.commit()
     return jsonify(record.to_dict()), 201
-
-
-@media.get("/media/<path:filename>")
-def serve_uploaded_file(filename: str):
-    return send_from_directory(current_app.config["UPLOAD_FOLDER"], filename)
