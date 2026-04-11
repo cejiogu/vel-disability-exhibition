@@ -1,16 +1,19 @@
 import type { Route } from "./+types/home";
 import { Link } from "react-router";
 
+import { AdjustableTextSection } from "../components/adjustable-text-section";
 import { SiteNav } from "../components/site-nav";
+import { exhibitionStatement } from "../content/exhibition-content";
 import { CONTRIBUTE_ENABLED } from "../lib/feature-flags";
+import { SITE_TITLE } from "../lib/site-metadata";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Disability Exhibition Contribution Website" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content:
-        "An accessible, low-glare homepage for contributing to the Disability Exhibition.",
+        "Home page for the Cripping Time Across Realities arts exhibition.",
     },
   ];
 }
@@ -20,13 +23,12 @@ export default function Home() {
     <main className="site-shell">
       <SiteNav />
 
-      <header className="hero">
-        <p className="eyebrow">Virtual Embodiment Lab</p>
-        <h1>Disability Exhibition Contribution Website</h1>
+      <header className="hero hero-centered">
+        <h1 className="hero-title">Cripping Time Across Realities Arts Exhibition</h1>
         <p className="lede">
-          Visitors scan exhibition QR codes with their phone camera. Contributors
-          use this site before and during the exhibition to share work, context,
-          and supporting materials.
+          Scan exhibition QR codes to open artwork pages, supporting media, and
+          AR-enhanced experiences directly in your phone browser. This site also
+          supports contributor submissions and on-site uploads throughout the exhibition.
         </p>
         <div className="mode-cards">
           <article className="mode-card">
@@ -61,6 +63,15 @@ export default function Home() {
         </div>
       </header>
 
+      <AdjustableTextSection title="Exhibition Statement">
+        <div className="transcript-body">
+          <p>{exhibitionStatement.intro}</p>
+          {exhibitionStatement.body.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </AdjustableTextSection>
+
       <section className="panel">
         <h2>Contributing To The Exhibition</h2>
         <p>
@@ -85,54 +96,6 @@ export default function Home() {
             Go To Upload
           </Link>
         </div>
-      </section>
-
-      <section id="guidelines" className="panel">
-        <h2>Design Principles Used On This Page</h2>
-        <ul>
-          <li>
-            Foreground and background use strong luminance contrast for easier
-            reading.
-          </li>
-          <li>
-            The background uses a soft cream tone to reduce harsh bright-glare
-            effects.
-          </li>
-          <li>
-            Color cues are paired with labels and shapes, not red-green alone.
-          </li>
-          <li>
-            Warm highlight colors are reserved for interactive and physical
-            object cues.
-          </li>
-        </ul>
-      </section>
-
-      <section className="grid-two">
-        <article className="panel">
-          <h3>Comfortable Reading Palette</h3>
-          <p>
-            Body text is dark slate on soft cream. Cards use very dark
-            backgrounds with light text for users who prefer reduced brightness.
-          </p>
-          <div className="palette">
-            <span className="chip chip-cream">Cream + Near Black</span>
-            <span className="chip chip-gray">Gray + Off-White</span>
-            <span className="chip chip-dark">Dark + Light Gray</span>
-          </div>
-        </article>
-        <article className="panel">
-          <h3>Object Visibility Colors</h3>
-          <p>
-            For edge markers, steps, and labeled controls, warm solid colors
-            stand out on dark surfaces.
-          </p>
-          <div className="object-demos" aria-label="Object contrast examples">
-            <span className="marker marker-yellow">Step Edge</span>
-            <span className="marker marker-orange">Action Button</span>
-            <span className="marker marker-red">Safety Label</span>
-          </div>
-        </article>
       </section>
     </main>
   );

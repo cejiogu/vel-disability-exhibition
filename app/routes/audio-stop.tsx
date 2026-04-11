@@ -3,11 +3,12 @@ import { Link, useParams } from "react-router";
 import { SiteNav } from "../components/site-nav";
 import { AdjustableTextSection } from "../components/adjustable-text-section";
 import { audioStops } from "../content/exhibition-content";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/audio-stop";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Audio Stop | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content: "Individual audio tour stop with transcript support.",

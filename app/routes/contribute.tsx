@@ -4,11 +4,12 @@ import { useState, type FormEvent } from "react";
 import { SiteNav } from "../components/site-nav";
 import { CONTRIBUTE_ENABLED } from "../lib/feature-flags";
 import { postForm } from "../lib/api";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/contribute";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Contribute | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content:

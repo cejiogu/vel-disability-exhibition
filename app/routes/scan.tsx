@@ -1,12 +1,13 @@
 import { Link } from "react-router";
 
 import { SiteNav } from "../components/site-nav";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/scan";
 
 // Deprecated route: visitors now scan QR codes with the device camera app.
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Scan | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content: "Scanning now happens through the device camera app.",

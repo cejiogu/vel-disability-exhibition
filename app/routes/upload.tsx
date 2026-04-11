@@ -4,11 +4,12 @@ import { Link } from "react-router";
 
 import { SiteNav } from "../components/site-nav";
 import { postForm } from "../lib/api";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/upload";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Upload | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content:

@@ -3,6 +3,7 @@ import { Link } from "react-router";
 
 import { SiteNav } from "../components/site-nav";
 import { fetchJson, resolveMediaUrl } from "../lib/api";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/artwork-index";
 
 type ContributionListItem = {
@@ -15,7 +16,7 @@ type ContributionListItem = {
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Browse All Artwork | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content: "Browse all exhibition contributions and link into individual artwork pages.",

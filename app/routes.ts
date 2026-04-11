@@ -9,7 +9,6 @@ export default [
   route("audio", "routes/audio-index.tsx"),
   route("audio/:slug", "routes/audio-stop.tsx"),
   route("activity", "routes/activity.tsx"),
-  route("statement", "routes/statement.tsx"),
   // Deprecated: scanning now happens through the device camera app, not in-app.
   route("scan", "routes/scan.tsx"),
 ] satisfies RouteConfig;

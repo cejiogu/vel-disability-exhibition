@@ -1,11 +1,12 @@
 import { SiteNav } from "../components/site-nav";
 import { AdjustableTextSection } from "../components/adjustable-text-section";
 import { visitorActivity } from "../content/exhibition-content";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/activity";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Visitor Activity | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content: "Home for Anita's augmented reality drawing experience.",

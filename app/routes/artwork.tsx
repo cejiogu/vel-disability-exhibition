@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router";
 import { AdjustableTextSection } from "../components/adjustable-text-section";
 import { SiteNav } from "../components/site-nav";
 import { fetchJson, resolveMediaUrl } from "../lib/api";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/artwork";
 
 type ContributionRecord = {
@@ -24,7 +25,7 @@ type ContributionRecord = {
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Artwork | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content: "Artwork detail page for exhibition contributions.",
