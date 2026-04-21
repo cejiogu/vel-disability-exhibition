@@ -19,15 +19,15 @@ export default function Template() {
         <Link to="/" className="logo-home" aria-label="Go to home page">
           <img src="/vel-logo.jpeg" alt="Virtual Embodiment Lab logo" />
         </Link>
+        <div className="site-branding" aria-label="Exhibition name">
+          Cripping Time Across Realities
+        </div>
         <div className="site-nav-links">
           <NavLink to="/" end className="nav-link">
             Home
           </NavLink>
-          <NavLink to="/upload" className="nav-link">
-            Upload
-          </NavLink>
-          <NavLink to="/contribute" className="nav-link">
-            Contribute
+          <NavLink to="/browse-artwork" className="nav-link">
+            Browse Artwork
           </NavLink>
           <NavLink to="/scan" className="nav-link nav-link-scan">
             Scan
