@@ -19,7 +19,13 @@ export function meta({ params }: Route.MetaArgs) {
 export default function ArtistPage({ params }: Route.ComponentProps) {
   const artist = getArtistBySlug(params.slug);
   const [activeStep, setActiveStep] = useState(0);
+  const [processMode, setProcessMode] = useState<"swipe" | "timeline">("swipe");
+  const [showFullVisualDescription, setShowFullVisualDescription] = useState(false);
+  const [showFullStatement, setShowFullStatement] = useState(false);
+  const [activeSection, setActiveSection] = useState("overview");
+  const [playbackRate, setPlaybackRate] = useState(1);
   const stepRefs = useRef<Array<HTMLElement | null>>([]);
+  const artworkAudioRef = useRef<HTMLAudioElement | null>(null);
 
   if (!artist) {
     return (
@@ -34,8 +40,69 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     );
   }
 
+  const sections = [
+    { id: "overview", label: "Overview", visible: true },
+    { id: "audio", label: "Audio", visible: true },
+    { id: "process", label: "Process", visible: true },
+    { id: "poem", label: "Poem", visible: Boolean(artist.poemEmbedUrl) },
+    { id: "webgl", label: "WebGL", visible: Boolean(artist.webglEmbedUrl) },
+    {
+      id: "notes",
+      label: "Notes",
+      visible: Boolean(artist.creationNotes || artist.externalLinks?.length),
+    },
+  ].filter((section) => section.visible);
+
+  const isVisualDescriptionLong = artist.pieceVisualDescription.length > 240;
+  const isStatementLong = artist.statement.length > 550;
+  const previewVisualDescription = showFullVisualDescription
+    ? artist.pieceVisualDescription
+    : `${artist.pieceVisualDescription.slice(0, 240)}...`;
+  const previewStatement = showFullStatement
+    ? artist.statement
+    : `${artist.statement.slice(0, 550)}...`;
+
   useEffect(() => {
-    if (!artist.processItems.length) {
+    window.localStorage.setItem("lastArtistSlug", artist.slug);
+  }, [artist.slug]);
+
+  useEffect(() => {
+    setActiveStep(0);
+    setProcessMode("swipe");
+    setShowFullStatement(false);
+    setShowFullVisualDescription(false);
+  }, [artist.slug]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0.45,
+        rootMargin: "-20% 0px -55% 0px",
+      }
+    );
+
+    sections.forEach((section) => {
+      const sectionElement = document.getElementById(section.id);
+      if (sectionElement) {
+        observer.observe(sectionElement);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [artist.creationNotes, artist.externalLinks?.length, artist.poemEmbedUrl, artist.webglEmbedUrl]);
+
+  useEffect(() => {
+    if (!artist.processItems.length || processMode !== "timeline") {
       return;
     }
 
@@ -69,7 +136,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     return () => {
       observer.disconnect();
     };
-  }, [artist.processItems.length]);
+  }, [artist.processItems.length, processMode]);
 
   const currentArtistIndex = artists.findIndex(
     (artistItem) => artistItem.slug === artist.slug
@@ -80,6 +147,36 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     currentArtistIndex < artists.length - 1
       ? artists[currentArtistIndex + 1]
       : null;
+
+  const activeProcessItem = artist.processItems[activeStep];
+  const hasCreationNotes = Boolean(artist.creationNotes);
+  const processStepCount = artist.processItems.length;
+
+  function jumpToSection(sectionId: string) {
+    const sectionElement = document.getElementById(sectionId);
+    if (sectionElement) {
+      sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function setNextPlaybackRate() {
+    const options = [1, 1.25, 1.5, 1.75];
+    const currentIndex = options.indexOf(playbackRate);
+    const nextRate = options[(currentIndex + 1) % options.length];
+
+    setPlaybackRate(nextRate);
+    if (artworkAudioRef.current) {
+      artworkAudioRef.current.playbackRate = nextRate;
+    }
+  }
+
+  function showPreviousProcessStep() {
+    setActiveStep((current) => (current === 0 ? processStepCount - 1 : current - 1));
+  }
+
+  function showNextProcessStep() {
+    setActiveStep((current) => (current === processStepCount - 1 ? 0 : current + 1));
+  }
 
   return (
     <main className="site-shell">
@@ -107,7 +204,20 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         <p className="lede">Medium: {artist.medium}</p>
       </header>
 
-      <section className="panel panel-main-artwork">
+      <nav className="artist-section-nav" aria-label="Artist page sections">
+        {sections.map((section) => (
+          <button
+            key={section.id}
+            type="button"
+            className={`section-chip ${activeSection === section.id ? "is-active" : ""}`}
+            onClick={() => jumpToSection(section.id)}
+          >
+            {section.label}
+          </button>
+        ))}
+      </nav>
+
+      <section id="overview" className="panel panel-main-artwork artist-panel-animate">
         <h2>Main Artwork</h2>
         {artist.mainArtworkUrl ? (
           <img
@@ -123,18 +233,36 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         )}
       </section>
 
-      <section className="panel">
+      <section className="panel artist-panel-animate">
         <h2>Artwork Visual Description</h2>
-        <p>{artist.pieceVisualDescription}</p>
+        <p>{isVisualDescriptionLong ? previewVisualDescription : artist.pieceVisualDescription}</p>
+        {isVisualDescriptionLong ? (
+          <button
+            type="button"
+            className="text-toggle"
+            onClick={() => setShowFullVisualDescription((value) => !value)}
+          >
+            {showFullVisualDescription ? "Show less" : "Read full visual description"}
+          </button>
+        ) : null}
       </section>
 
-      <section className="panel">
+      <section className="panel artist-panel-animate">
         <h2>Artist Statement</h2>
-        <p>{artist.statement}</p>
+        <p>{isStatementLong ? previewStatement : artist.statement}</p>
+        {isStatementLong ? (
+          <button
+            type="button"
+            className="text-toggle"
+            onClick={() => setShowFullStatement((value) => !value)}
+          >
+            {showFullStatement ? "Show less" : "Read full statement"}
+          </button>
+        ) : null}
       </section>
 
       {artist.poemEmbedUrl ? (
-        <section className="panel">
+        <section id="poem" className="panel artist-panel-animate">
           <h2>Poem Text</h2>
           <div className="embed-frame-wrap">
             <iframe
@@ -162,24 +290,37 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         </section>
       ) : null}
 
-      <section className="panel">
+      <section id="audio" className="panel artist-panel-animate">
         <h2>Artwork Audio Tour</h2>
         {artist.artworkAudioUrl ? (
-          <audio
-            controls
-            preload="none"
-            src={artist.artworkAudioUrl}
-            className="audio-player"
-          >
-            Your browser does not support audio playback.
-          </audio>
+          <div className="audio-shell">
+            <audio
+              ref={artworkAudioRef}
+              controls
+              preload="none"
+              src={artist.artworkAudioUrl}
+              className="audio-player"
+            >
+              Your browser does not support audio playback.
+            </audio>
+            <div className="audio-tools">
+              <p className="field-note">Playback speed: {playbackRate}x</p>
+              <button
+                type="button"
+                className="action action-secondary action-secondary-light"
+                onClick={setNextPlaybackRate}
+              >
+                Change Speed
+              </button>
+            </div>
+          </div>
         ) : (
           <p className="field-note">Audio tour coming soon.</p>
         )}
       </section>
 
       {artist.webglEmbedUrl ? (
-        <section className="panel panel-webgl">
+        <section id="webgl" className="panel panel-webgl artist-panel-animate">
           <h2>Interactive WebGL Environment</h2>
           <p className="field-note">
             Explore Daniel's WebGL version directly below.
@@ -207,56 +348,115 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         </section>
       ) : null}
 
-      <section className="panel panel-process-journey">
+      <section id="process" className="panel panel-process-journey artist-panel-animate">
         <h2>Creation Process Journey</h2>
         <p className="field-note">
           Follow the timeline below. Each step shows a process photo with its visual description directly underneath.
         </p>
         {artist.processItems.length ? (
           <>
+            <div className="process-mode-toggle" role="tablist" aria-label="Creation process view mode">
+              <button
+                type="button"
+                className={`process-mode-button ${processMode === "swipe" ? "is-active" : ""}`}
+                onClick={() => setProcessMode("swipe")}
+              >
+                Swipe Cards
+              </button>
+              <button
+                type="button"
+                className={`process-mode-button ${processMode === "timeline" ? "is-active" : ""}`}
+                onClick={() => setProcessMode("timeline")}
+              >
+                Timeline View
+              </button>
+            </div>
             <p className="timeline-progress" aria-live="polite">
               Step {activeStep + 1} of {artist.processItems.length}
             </p>
-            <div className="process-timeline" aria-label="Creation process timeline">
-            {artist.processItems.map((item, index) => (
-              <article
-                key={item.imageUrl}
-                className="timeline-step"
-                ref={(element) => {
-                  stepRefs.current[index] = element;
-                }}
-                data-timeline-index={index}
-              >
-                <div className="timeline-step-marker" aria-hidden="true">
-                  {index + 1}
-                </div>
-                <div className="timeline-step-card">
-                  <h3>Step {index + 1}</h3>
-                  <img
-                    src={item.imageUrl}
-                    alt={`${artist.title} process photo ${index + 1}`}
-                    className="timeline-image"
-                    loading="lazy"
-                  />
-                  <p className="timeline-label">Visual Description</p>
-                  <p>{item.visualDescription}</p>
-                  <p className="timeline-label">Audio</p>
-                  {item.audioUrl ? (
-                    <audio
-                      controls
-                      preload="none"
-                      src={item.audioUrl}
-                      className="audio-player"
-                    >
-                      Your browser does not support audio playback.
-                    </audio>
-                  ) : (
-                    <p className="field-note">Audio coming soon for this step.</p>
-                  )}
+            {processMode === "swipe" ? (
+              <article className="swipe-process-card">
+                <h3>Step {activeStep + 1}</h3>
+                <img
+                  src={activeProcessItem.imageUrl}
+                  alt={`${artist.title} process photo ${activeStep + 1}`}
+                  className="timeline-image"
+                  loading="lazy"
+                />
+                <p className="timeline-label">Visual Description</p>
+                <p>{activeProcessItem.visualDescription}</p>
+                <p className="timeline-label">Audio</p>
+                {activeProcessItem.audioUrl ? (
+                  <audio
+                    controls
+                    preload="none"
+                    src={activeProcessItem.audioUrl}
+                    className="audio-player"
+                  >
+                    Your browser does not support audio playback.
+                  </audio>
+                ) : (
+                  <p className="field-note">Audio coming soon for this step.</p>
+                )}
+                <div className="swipe-controls">
+                  <button
+                    type="button"
+                    className="action action-secondary action-secondary-light"
+                    onClick={showPreviousProcessStep}
+                  >
+                    Previous Step
+                  </button>
+                  <button
+                    type="button"
+                    className="action action-primary"
+                    onClick={showNextProcessStep}
+                  >
+                    Next Step
+                  </button>
                 </div>
               </article>
-            ))}
-            </div>
+            ) : (
+              <div className="process-timeline" aria-label="Creation process timeline">
+                {artist.processItems.map((item, index) => (
+                  <article
+                    key={item.imageUrl}
+                    className="timeline-step"
+                    ref={(element) => {
+                      stepRefs.current[index] = element;
+                    }}
+                    data-timeline-index={index}
+                  >
+                    <div className="timeline-step-marker" aria-hidden="true">
+                      {index + 1}
+                    </div>
+                    <div className="timeline-step-card">
+                      <h3>Step {index + 1}</h3>
+                      <img
+                        src={item.imageUrl}
+                        alt={`${artist.title} process photo ${index + 1}`}
+                        className="timeline-image"
+                        loading="lazy"
+                      />
+                      <p className="timeline-label">Visual Description</p>
+                      <p>{item.visualDescription}</p>
+                      <p className="timeline-label">Audio</p>
+                      {item.audioUrl ? (
+                        <audio
+                          controls
+                          preload="none"
+                          src={item.audioUrl}
+                          className="audio-player"
+                        >
+                          Your browser does not support audio playback.
+                        </audio>
+                      ) : (
+                        <p className="field-note">Audio coming soon for this step.</p>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </>
         ) : (
           <p className="field-note">Creation-process photos coming soon.</p>
@@ -264,14 +464,17 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
       </section>
 
       {artist.creationNotes ? (
-        <section className="panel">
+        <section id="notes" className="panel artist-panel-animate">
           <h2>Creation Notes</h2>
           <p>{artist.creationNotes}</p>
         </section>
       ) : null}
 
       {artist.externalLinks?.length ? (
-        <section className="panel">
+        <section
+          id={hasCreationNotes ? undefined : "notes"}
+          className="panel artist-panel-animate"
+        >
           <h2>Additional Material</h2>
           <ul>
             {artist.externalLinks.map((linkItem) => (
@@ -314,7 +517,14 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
           )}
         </div>
 
-        <div className="hero-actions">
+        <div className="hero-actions mobile-quick-actions">
+          <button
+            type="button"
+            className="action action-secondary action-secondary-light"
+            onClick={() => jumpToSection("audio")}
+          >
+            Jump To Audio
+          </button>
           <Link to="/browse-artwork" className="action action-primary">
             Back To Browse Artwork
           </Link>
