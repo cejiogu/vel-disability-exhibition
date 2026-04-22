@@ -59,6 +59,18 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      <section className="panel">
+        <h2>Augmented Reality Visitor Activity</h2>
+        <p>
+          Click below to open the AR visitor activity experience.
+        </p>
+        <div className="hero-actions mobile-quick-actions">
+          <Link to="/augmented-reality-visitor-activity" className="action action-primary">
+            Open AR Visitor Activity
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
