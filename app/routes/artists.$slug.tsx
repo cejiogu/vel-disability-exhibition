@@ -109,7 +109,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     <main className="site-shell">
       <SiteNav title={exhibitionTitle} />
 
-      <header className="hero">
+      <header className="hero hero-artist">
         <p className="eyebrow">{artist.affiliation}</p>
         <h1>{artist.title}</h1>
         <p className="lede">By {artist.name}</p>

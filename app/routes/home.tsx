@@ -19,7 +19,7 @@ export default function Home() {
     <main className="site-shell">
       <SiteNav title={exhibitionTitle} />
 
-      <header className="hero">
+      <header className="hero hero-exhibition">
         <h1>{exhibitionTitle}</h1>
         <h2>Exhibition Statement</h2>
         <p className="lede">
