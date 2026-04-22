@@ -48,6 +48,7 @@ export const artists: Artist[] = [
     affiliation: "Student",
     title: "An Ode to Wikipedia",
     medium: "Digital poem",
+    mainArtworkUrl: asset("Chase and Connor/Screenshot 2026-04-22 at 10.38.31 AM.png"),
     statement:
       "For as long as we can remember, we have been obsessed with Wikipedia, reading at least one article a day for most of our lives. This unique obsession is partially driven by our experiences as brothers with cerebral palsy because Wikipedia offers us an accessible outlet to learn quickly and on our own time in a standard format. These and many other aspects have made Wikipedia an ideal learning environment as we have learned to thrive with our disabilities. Furthermore, Wikipedia has enriched our view of disability one page at a time by showing us the commonness of rarity. Just as crip time centers on bending time to one's life, Wikipedia has allowed us to bend our learning environment around us.",
     pieceVisualDescription:

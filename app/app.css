@@ -41,6 +41,16 @@ body {
   justify-content: space-between;
 }
 
+.site-nav-menu {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.nav-menu-toggle {
+  display: none;
+}
+
 .site-nav-links {
   display: flex;
   gap: 0.6rem;
@@ -392,32 +402,6 @@ a {
   color: #1f2530;
   font-weight: 800;
 }
-.artist-section-nav {
-  position: sticky;
-  top: 0.35rem;
-  z-index: 4;
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding: 0.45rem;
-  border: 2px solid #7d705f;
-  border-radius: 0.8rem;
-  background: #fffaf0;
-}
-.section-chip {
-  border: 2px solid #796e5d;
-  border-radius: 999px;
-  background: #fff7df;
-  color: #1f2228;
-  font-weight: 800;
-  white-space: nowrap;
-  padding: 0.3rem 0.65rem;
-}
-.section-chip.is-active {
-  background: #2b2f36;
-  color: #f3f4f7;
-  border-color: #f0b429;
-}
 .artist-panel-animate {
   animation: panelFadeIn 380ms ease;
 }
@@ -573,10 +557,37 @@ a {
 
 .audio-player {
   width: min(520px, 100%);
+  background: #eaedf2;
+  border: 1px solid #c9d0da;
+  border-radius: 0.55rem;
+  color-scheme: light;
 }
+
+.audio-player::-webkit-media-controls-panel {
+  background-color: #eaedf2;
+}
+
+.audio-player-hero {
+  background: #3a3e47;
+  border-color: #4a4f5b;
+  color-scheme: dark;
+}
+
+.audio-player-hero::-webkit-media-controls-panel {
+  background-color: #3a3e47;
+}
+
 .audio-shell {
   display: grid;
   gap: 0.5rem;
+  margin-top: 1rem;
+}
+.hero-audio-heading {
+  font-size: 1.05rem;
+  margin-top: 0.7rem;
+  margin-bottom: 0.2rem;
+  color: #ffe99f;
+  font-weight: 800;
 }
 .audio-tools {
   display: flex;
@@ -989,13 +1000,69 @@ textarea {
     padding-top: 1.25rem;
   }
 
+  .site-nav {
+    background: #fff8ed;
+    border: 2px solid #7f7462;
+    border-radius: 0.9rem;
+    padding: 0.55rem;
+    align-items: center;
+  }
+
   .site-branding {
-    min-width: 100%;
-    order: 3;
+    min-width: 0;
+    width: auto;
+    order: 1;
+    flex: 1;
+    font-size: clamp(0.95rem, 3.6vw, 1.1rem);
+  }
+
+  .site-nav-menu {
+    order: 2;
+    margin-left: auto;
+  }
+
+  .nav-menu-toggle {
+    display: inline-flex;
+    border: 2px solid #5e5648;
+    border-radius: 999px;
+    background: var(--accent-gold);
+    color: #17181c;
+    min-height: 44px;
+    padding: 0.5rem 0.95rem;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    cursor: pointer;
   }
 
   .site-nav-links {
+    display: none;
+  }
+
+  .site-nav-links.is-open {
+    display: grid;
+    gap: 0.45rem;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.4rem);
+    min-width: 220px;
+    padding: 0.55rem;
+    background: #fffdf5;
+    border: 2px solid #7f7462;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 18px rgba(28, 24, 18, 0.18);
+    z-index: 20;
+  }
+
+  .nav-link {
     width: 100%;
+    min-height: 44px;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem 0.85rem;
+    line-height: 1.2;
   }
 
   .hero {
@@ -1066,5 +1133,30 @@ textarea {
   .timeline-progress {
     top: 0.35rem;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-nav {
+    gap: 0.5rem;
+  }
+
+  .site-branding {
+    width: 100%;
+  }
+
+  .site-nav-menu {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .nav-menu-toggle {
+    width: 100%;
+  }
+
+  .site-nav-links.is-open {
+    left: 0;
+    right: 0;
+    min-width: 0;
   }
 }

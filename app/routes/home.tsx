@@ -1,6 +1,7 @@
 import type { Route } from "./+types/home";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import { exhibitionTitle } from "../lib/artists";
+import { SiteNav } from "../components/site-nav";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -16,22 +17,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   return (
     <main className="site-shell">
-      <nav className="site-nav" aria-label="Primary">
-        <div className="site-branding" aria-label="Exhibition name">
-          {exhibitionTitle}
-        </div>
-        <div className="site-nav-links">
-          <NavLink to="/" end className="nav-link">
-            Home
-          </NavLink>
-          <NavLink to="/browse-artwork" className="nav-link">
-            Browse Artwork
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan">
-            Scan
-          </NavLink>
-        </div>
-      </nav>
+      <SiteNav title={exhibitionTitle} />
 
       <header className="hero">
         <h1>{exhibitionTitle}</h1>
@@ -49,14 +35,29 @@ export default function Home() {
         </p>
       </header>
 
+      <section className="panel">
+        <h2>Browse Artists</h2>
+        <p>
+          Explore work from 7 exhibition artists. Each artist page includes
+          their piece, statement, visual description, and available audio tour.
+        </p>
+        <div className="hero-actions mobile-quick-actions">
+          <Link to="/browse-artwork" className="action action-primary">
+            Browse Artists
+          </Link>
+        </div>
+      </section>
+
       <section className="panel scan-cta">
         <h2>Scan A QR Code</h2>
         <p>
           Use your camera to scan exhibition QR codes and open AR experiences.
         </p>
-        <Link to="/scan" className="action action-primary">
-          Open QR Scanner
-        </Link>
+        <div className="hero-actions mobile-quick-actions">
+          <Link to="/scan" className="action action-primary">
+            Open QR Scanner
+          </Link>
+        </div>
       </section>
     </main>
   );

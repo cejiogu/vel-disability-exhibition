@@ -1,7 +1,8 @@
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import { useState, type FormEvent } from "react";
 
 import { postFormData } from "../lib/api";
+import { SiteNav } from "../components/site-nav";
 import type { Route } from "./+types/upload";
 
 export function meta({}: Route.MetaArgs) {
@@ -53,25 +54,7 @@ export default function Upload() {
 
   return (
     <main className="site-shell">
-      <nav className="site-nav" aria-label="Primary">
-        <Link to="/" className="logo-home" aria-label="Go to home page">
-          <img src="/vel-logo.jpeg" alt="Virtual Embodiment Lab logo" />
-        </Link>
-        <div className="site-branding" aria-label="Exhibition name">
-          Cripping Time Across Realities
-        </div>
-        <div className="site-nav-links">
-          <NavLink to="/" end className="nav-link">
-            Home
-          </NavLink>
-          <NavLink to="/browse-artwork" className="nav-link">
-            Browse Artwork
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan">
-            Scan
-          </NavLink>
-        </div>
-      </nav>
+      <SiteNav title="Cripping Time Across Realities" showLogo />
 
       <header className="panel panel-strong">
         <p className="eyebrow">Upload Form</p>

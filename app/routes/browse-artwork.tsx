@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import { artists, exhibitionTitle } from "../lib/artists";
+import { SiteNav } from "../components/site-nav";
 import type { Route } from "./+types/browse-artwork";
 
 export function meta({}: Route.MetaArgs) {
@@ -17,34 +18,10 @@ export function meta({}: Route.MetaArgs) {
 export default function BrowseArtwork() {
   const navigate = useNavigate();
   const [selectedArtistSlug, setSelectedArtistSlug] = useState("");
-  const [resumeArtistSlug, setResumeArtistSlug] = useState<string | null>(null);
-
-  useEffect(() => {
-    const savedArtistSlug = window.localStorage.getItem("lastArtistSlug");
-
-    if (savedArtistSlug && artists.some((artist) => artist.slug === savedArtistSlug)) {
-      setResumeArtistSlug(savedArtistSlug);
-    }
-  }, []);
 
   return (
     <main className="site-shell">
-      <nav className="site-nav" aria-label="Primary">
-        <div className="site-branding" aria-label="Exhibition name">
-          {exhibitionTitle}
-        </div>
-        <div className="site-nav-links">
-          <NavLink to="/" end className="nav-link">
-            Home
-          </NavLink>
-          <NavLink to="/browse-artwork" className="nav-link">
-            Browse Artwork
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan">
-            Scan
-          </NavLink>
-        </div>
-      </nav>
+      <SiteNav title={exhibitionTitle} />
 
       <header className="hero">
         <h1>Browse Artwork</h1>
@@ -60,17 +37,6 @@ export default function BrowseArtwork() {
         <p className="field-note">
           Select a name to jump straight to that artist page.
         </p>
-        {resumeArtistSlug ? (
-          <div className="hero-actions">
-            <button
-              type="button"
-              className="action action-secondary action-secondary-light"
-              onClick={() => navigate(`/artists/${resumeArtistSlug}`)}
-            >
-              Resume Last Artist
-            </button>
-          </div>
-        ) : null}
         <div className="quick-jump-form">
           <label htmlFor="artist-jump">Select an artist</label>
           <select
@@ -99,15 +65,7 @@ export default function BrowseArtwork() {
         {artists.map((artist) => {
           return (
             <article key={artist.slug} className="art-card">
-              {artist.slug === "chase-and-connor" && artist.poemEmbedUrl ? (
-                <div className="card-image-link card-embed-container">
-                  <iframe
-                    src={artist.poemEmbedUrl}
-                    title={`${artist.name} poem`}
-                    className="card-embed"
-                  />
-                </div>
-              ) : artist.slug === "daniel-enriquez" && artist.webglEmbedUrl ? (
+              {artist.slug === "daniel-enriquez" && artist.webglEmbedUrl ? (
                 <div className="card-image-link card-embed-container">
                   <iframe
                     src={artist.webglEmbedUrl}
@@ -115,6 +73,15 @@ export default function BrowseArtwork() {
                     className="card-embed"
                   />
                 </div>
+              ) : artist.mainArtworkUrl ? (
+                <Link to={`/artists/${artist.slug}`} className="card-image-link">
+                  <img
+                    src={artist.mainArtworkUrl}
+                    alt={`${artist.title} cover image`}
+                    className="art-card-image"
+                    loading="lazy"
+                  />
+                </Link>
               ) : (
                 <Link to={`/artists/${artist.slug}`} className="card-image-link">
                   <div className="art-card-placeholder" role="img" aria-label={`Artwork by ${artist.name}`}>

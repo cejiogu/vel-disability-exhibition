@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 
 import { artists, exhibitionTitle, getArtistBySlug } from "../lib/artists";
+import { SiteNav } from "../components/site-nav";
 import type { Route } from "./+types/artists.$slug";
 
 export function meta({ params }: Route.MetaArgs) {
@@ -21,10 +22,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
   const [activeStep, setActiveStep] = useState(0);
   const [showFullVisualDescription, setShowFullVisualDescription] = useState(false);
   const [showFullStatement, setShowFullStatement] = useState(false);
-  const [activeSection, setActiveSection] = useState("overview");
-  const [playbackRate, setPlaybackRate] = useState(1);
   const stepRefs = useRef<Array<HTMLElement | null>>([]);
-  const artworkAudioRef = useRef<HTMLAudioElement | null>(null);
 
   if (!artist) {
     return (
@@ -38,21 +36,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
       </main>
     );
   }
-
-  const sections = [
-    { id: "overview", label: "Overview", visible: true },
-    { id: "audio", label: "Audio", visible: true },
-    { id: "process", label: "Process", visible: true },
-    { id: "poem", label: "Poem", visible: Boolean(artist.poemEmbedUrl) },
-    { id: "webgl", label: "WebGL", visible: Boolean(artist.webglEmbedUrl) },
-    {
-      id: "notes",
-      label: "Notes",
-      visible: Boolean(
-        artist.creationNotes || artist.additionalTextAudioUrl || artist.externalLinks?.length
-      ),
-    },
-  ].filter((section) => section.visible);
 
   const isVisualDescriptionLong = artist.pieceVisualDescription.length > 240;
   const isStatementLong = artist.statement.length > 550;
@@ -72,40 +55,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     setShowFullStatement(false);
     setShowFullVisualDescription(false);
   }, [artist.slug]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      {
-        root: null,
-        threshold: 0.45,
-        rootMargin: "-20% 0px -55% 0px",
-      }
-    );
-
-    sections.forEach((section) => {
-      const sectionElement = document.getElementById(section.id);
-      if (sectionElement) {
-        observer.observe(sectionElement);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [
-    artist.additionalTextAudioUrl,
-    artist.creationNotes,
-    artist.externalLinks?.length,
-    artist.poemEmbedUrl,
-    artist.webglEmbedUrl,
-  ]);
 
   useEffect(() => {
     if (!artist.processItems.length) {
@@ -156,42 +105,9 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
 
   const hasCreationNotes = Boolean(artist.creationNotes);
 
-  function jumpToSection(sectionId: string) {
-    const sectionElement = document.getElementById(sectionId);
-    if (sectionElement) {
-      sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
-
-  function setNextPlaybackRate() {
-    const options = [1, 1.25, 1.5, 1.75];
-    const currentIndex = options.indexOf(playbackRate);
-    const nextRate = options[(currentIndex + 1) % options.length];
-
-    setPlaybackRate(nextRate);
-    if (artworkAudioRef.current) {
-      artworkAudioRef.current.playbackRate = nextRate;
-    }
-  }
-
   return (
     <main className="site-shell">
-      <nav className="site-nav" aria-label="Primary">
-        <div className="site-branding" aria-label="Exhibition name">
-          {exhibitionTitle}
-        </div>
-        <div className="site-nav-links">
-          <NavLink to="/" end className="nav-link">
-            Home
-          </NavLink>
-          <NavLink to="/browse-artwork" className="nav-link">
-            Browse Artwork
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan">
-            Scan
-          </NavLink>
-        </div>
-      </nav>
+      <SiteNav title={exhibitionTitle} />
 
       <header className="hero">
         <p className="eyebrow">{artist.affiliation}</p>
@@ -208,20 +124,25 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
             {showFullStatement ? "Show less" : "Read full statement"}
           </button>
         ) : null}
-      </header>
 
-      <nav className="artist-section-nav" aria-label="Artist page sections">
-        {sections.map((section) => (
-          <button
-            key={section.id}
-            type="button"
-            className={`section-chip ${activeSection === section.id ? "is-active" : ""}`}
-            onClick={() => jumpToSection(section.id)}
-          >
-            {section.label}
-          </button>
-        ))}
-      </nav>
+        <div className="audio-shell">
+          <h2 className="hero-audio-heading">Artwork Audio Overview</h2>
+          {artist.artworkAudioUrl ? (
+            <>
+              <audio
+                controls
+                preload="none"
+                src={artist.artworkAudioUrl}
+                className="audio-player audio-player-hero"
+              >
+                Your browser does not support audio playback.
+              </audio>
+            </>
+          ) : (
+            <p className="lede">Audio tour coming soon.</p>
+          )}
+        </div>
+      </header>
 
       <section id="overview" className="panel panel-main-artwork artist-panel-animate">
         <h2>Main Artwork</h2>
@@ -299,35 +220,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
               </button>
             ) : null}
           </>
-        )}
-      </section>
-
-      <section id="audio" className="panel artist-panel-animate">
-        <h2>Artwork Audio Overview</h2>
-        {artist.artworkAudioUrl ? (
-          <div className="audio-shell">
-            <audio
-              ref={artworkAudioRef}
-              controls
-              preload="none"
-              src={artist.artworkAudioUrl}
-              className="audio-player"
-            >
-              Your browser does not support audio playback.
-            </audio>
-            <div className="audio-tools">
-              <p className="field-note">Playback speed: {playbackRate}x</p>
-              <button
-                type="button"
-                className="action action-secondary action-secondary-light"
-                onClick={setNextPlaybackRate}
-              >
-                Change Speed
-              </button>
-            </div>
-          </div>
-        ) : (
-          <p className="field-note">Audio tour coming soon.</p>
         )}
       </section>
 
@@ -513,13 +405,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         </div>
 
         <div className="hero-actions mobile-quick-actions">
-          <button
-            type="button"
-            className="action action-secondary action-secondary-light"
-            onClick={() => jumpToSection("audio")}
-          >
-            Jump To Audio
-          </button>
           <Link to="/browse-artwork" className="action action-primary">
             Back To Browse Artwork
           </Link>
