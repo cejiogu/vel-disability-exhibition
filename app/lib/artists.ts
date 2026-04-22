@@ -15,6 +15,7 @@ export type Artist = {
   pieceVisualDescription: string;
   processItems: ProcessItem[];
   artworkAudioUrl?: string;
+  additionalTextAudioUrl?: string;
   poemEmbedUrl?: string;
   poemSourceUrl?: string;
   webglEmbedUrl?: string;
@@ -56,8 +57,12 @@ export const artists: Artist[] = [
         imageUrl: asset("Chase and Connor/Photo 1 + Visual Description/Zoom_Photo.png"),
         visualDescription:
           "Screenshot of a Zoom call between Chase and Connor. Both have short blond hair and wear glasses, and both rest their chins on a fist.",
+        audioUrl: asset(
+          "Chase and Connor/Photo 1 + Visual Description/Process Photo - Chase and Connor.m4a"
+        ),
       },
     ],
+    artworkAudioUrl: asset("Chase and Connor/Art Piece Info - Chase and Connor.m4a"),
     poemEmbedUrl:
       "https://docs.google.com/presentation/d/1Ybhnyq8pYj0UKgSAY_IuvJHCHCMNslvR/embed?start=false&loop=false&delayms=5000",
     poemSourceUrl:
@@ -84,28 +89,37 @@ export const artists: Artist[] = [
         imageUrl: asset("Andria Crowjoy/Photo 1 + Audio Tour/20260126_102533.jpg"),
         visualDescription:
           "A long studio with a white tile floor and a ceiling made of light brown planks. The room is filled with tables, paint supplies, and easels. A tarp is laid out on part of the floor. Outside the window, snow coats the ground and tree branches.",
+        audioUrl: asset("Andria Crowjoy/Photo 1 + Audio Tour/Process Photo 1 - Andria.m4a"),
       },
       {
         imageUrl: asset("Andria Crowjoy/Photo 2 + Audio Tour/20260126_145822.jpg"),
         visualDescription:
           "A room filled with colorful paintings lining the floors and propped against a wooden easel, which sits atop a paint-splattered tarp.",
+        audioUrl: asset("Andria Crowjoy/Photo 2 + Audio Tour/Process Photo 2 - Andria.m4a"),
       },
       {
         imageUrl: asset("Andria Crowjoy/Photo 3 + Audio Tour/20260126_160115-EDIT.jpg"),
         visualDescription:
           "A table full of snacks, medicine, and nutritional supplements beside a snowy window.",
+        audioUrl: asset("Andria Crowjoy/Photo 3 + Audio Tour/Process Photo 3 - Andria.m4a"),
       },
       {
         imageUrl: asset("Andria Crowjoy/Photo 4 + Audio Tour/20260126_160118-EDIT.jpg"),
         visualDescription:
           "A wider perspective of the snack, medicine, and supplement table that includes more snowy window, cleaning supplies, and an easel with a yellow painting of a bird on it.",
+        audioUrl: asset("Andria Crowjoy/Photo 4 + Audio Tour/Process Photo 4 - Andria.m4a"),
       },
       {
         imageUrl: asset("Andria Crowjoy/Photo 5 + Audio Tour/20260127_121011.jpg"),
         visualDescription:
           "A room filled with paintings propped against an easel and various surfaces. Outside the windows, barren branches and snowy ground intermingle.",
+        audioUrl: asset("Andria Crowjoy/Photo 5 + Audio Tour/Process Photo 5 - Andria.m4a"),
       },
     ],
+    artworkAudioUrl: asset("Andria Crowjoy/Art Piece Info - Andria.m4a"),
+    additionalTextAudioUrl: asset(
+      "Andria Crowjoy/Additional Text (link)/Additional Text - Andria.m4a"
+    ),
     creationNotes:
       "Retreat space where this piece was created: https://www.saltonstall.org/retreat/retreat-space/",
   },
@@ -148,6 +162,8 @@ export const artists: Artist[] = [
     pieceVisualDescription:
       "A picture frame is nested inside another picture frame. Inside the open frames, rocks are suspended on strings. Surrounding the frame is a pile of rocks, a few covered in tissue paper colored white, purple, and green.",
     processItems: [],
+    artworkAudioUrl: asset("Alison Fromme/Art Piece Info - Alison.m4a"),
+    additionalTextAudioUrl: asset("Alison Fromme/Additional Text/Additional Text - Alison.m4a"),
     creationNotes:
       "Additional text: Instead it is a slew of symptoms. A pile of rocks to trip over, pick over, tuck into a pocket, to kick down the road, to weigh in the hollow of a hand or hands, to hurl at a window or a mirror. Instead it is sharp edges, specks of color, glints of light formed over time under heat and pressure settling into an unsettled landscape.",
   },
@@ -166,28 +182,47 @@ export const artists: Artist[] = [
         imageUrl: asset("Gillian Gomer/1. Photo 1 Group + Audio Tour/IMG_4582.jpeg"),
         visualDescription:
           "Gridded notebook paper with quickly jotted down visual and written ideas, ranging from memory display concepts to interactive pieces for audience engagement.",
+        audioUrl: asset(
+          "Gillian Gomer/1. Photo 1 Group + Audio Tour/Process Photo 1 - Gillian.m4a"
+        ),
       },
       {
         imageUrl: asset("Gillian Gomer/1. Photo 1 Group + Audio Tour/IMG_4583.jpeg"),
         visualDescription:
           "Gridded notebook paper with quickly jotted down visual and written ideas, ranging from memory display concepts to interactive pieces for audience engagement.",
+        audioUrl: asset(
+          "Gillian Gomer/1. Photo 1 Group + Audio Tour/Process Photo 1 - Gillian.m4a"
+        ),
       },
       {
         imageUrl: asset("Gillian Gomer/1. Photo 1 Group + Audio Tour/IMG_4584.jpeg"),
         visualDescription:
           "Gridded notebook paper with quickly jotted down visual and written ideas, ranging from memory display concepts to interactive pieces for audience engagement.",
+        audioUrl: asset(
+          "Gillian Gomer/1. Photo 1 Group + Audio Tour/Process Photo 1 - Gillian.m4a"
+        ),
       },
       {
         imageUrl: asset("Gillian Gomer/2. Photo 2 Group + Audio Tour/IMG_4550.jpeg"),
         visualDescription:
           "Gillian working on her project amid a chaotic arrangement of art supplies across her living room, removing pieces as she changes her color scheme.",
+        audioUrl: asset(
+          "Gillian Gomer/2. Photo 2 Group + Audio Tour/Process Photo 2 - Gillian.m4a"
+        ),
       },
       {
         imageUrl: asset("Gillian Gomer/2. Photo 2 Group + Audio Tour/IMG_4567.jpeg"),
         visualDescription:
           "Gillian working on her project amid a chaotic arrangement of art supplies across her living room, removing pieces as she changes her color scheme.",
+        audioUrl: asset(
+          "Gillian Gomer/2. Photo 2 Group + Audio Tour/Process Photo 2 - Gillian.m4a"
+        ),
       },
     ],
+    artworkAudioUrl: asset("Gillian Gomer/Art Piece Info - Gillian.m4a"),
+    additionalTextAudioUrl: asset(
+      "Gillian Gomer/3. Additional Text/Additional Text - Gillian.m4a"
+    ),
     creationNotes:
       "I initially left the call for art pieces in my inbox for a few days, unsure whether I could invest the time to make something that felt like me. I eventually chose to do it as a self-motivator. Art used to be central to my life, but perfectionism became my enemy, and I stopped creating to avoid disappointment. Big ideas swarmed for months while I delayed starting because I wanted a perfect plan. After years of dismissal before diagnosis, I still question the legitimacy of my own experience. In the end I spent three days panicking on my couch before deciding to trust the process, make a mess, and let imperfection show.",
   },
@@ -206,33 +241,40 @@ export const artists: Artist[] = [
         imageUrl: asset("Ria Gualano/Photo 1 + Audio Tour/Screenshot_20260421_002325_Instagram.jpg"),
         visualDescription:
           "A selfie of Ria, a woman with long dark brown hair, lying on a beach. She wears a pink dress with flowers, a blue straw hat, and a serious expression. A blue towel in sand forms the background beneath her.",
+        audioUrl: asset("Ria Gualano/Photo 1 + Audio Tour/Process Photo 1 - Ria.m4a"),
       },
       {
         imageUrl: asset("Ria Gualano/Photo 2 + Audio Tour/20250224_200306.jpg"),
         visualDescription:
           "A self-portrait of Ria wearing her patchwork denim and hospital gown hat. She tips the brim out of her eyes with one hand, staring into the camera with a serious expression.",
+        audioUrl: asset("Ria Gualano/Photo 2 + Audio Tour/Process Photo 2 - Ria.m4a"),
       },
       {
         imageUrl: asset("Ria Gualano/Photo 3 + Audio Tour/20250129_015444.jpg"),
         visualDescription:
           "Materials from the creation process of Beach Hat, including inverted seams sewn into rectangular panels, layered half-circle and smaller circle denim and hospital-gown patches, a pink cutting board, and a sewing machine. A pile of denim jeans and hospital gowns sits below.",
+        audioUrl: asset("Ria Gualano/Photo 3 + Audio Tour/Process Photo 3 - Ria.m4a"),
       },
       {
         imageUrl: asset("Ria Gualano/Photo 4 + Audio Tour/20250131_012236.jpg"),
         visualDescription:
           "The brim of Beach Hat before fitting to the pattern, sitting on carpet beside circular pattern paper.",
+        audioUrl: asset("Ria Gualano/Photo 4 + Audio Tour/Process Photo 4 - Ria.m4a"),
       },
       {
         imageUrl: asset("Ria Gualano/Photo 5 + Audio Tour/20250128_231850.jpg"),
         visualDescription:
           "Patches of denim in different shades layered during hat creation, resting on the pink cutting board beside the sewing machine.",
+        audioUrl: asset("Ria Gualano/Photo 5 + Audio Tour/Process Photo 5 - Ria.m4a"),
       },
       {
         imageUrl: asset("Ria Gualano/Photo 6 + Audio Tour/20250120_210208.jpg"),
         visualDescription:
           "The legs of nine pairs of denim jeans fanned from dark to light shades.",
+        audioUrl: asset("Ria Gualano/Photo 6 + Audio Tour/Process Photo 6 - Ria.m4a"),
       },
     ],
+    artworkAudioUrl: asset("Ria Gualano/Art Piece Info - Ria.m4a"),
   },
   {
     slug: "vico-vecchiotti",
@@ -245,6 +287,7 @@ export const artists: Artist[] = [
     pieceVisualDescription:
       "Dark green patterned fabric with thick lines embroidered in light green and thin topographic lines embroidered in white, with beads and rhinestones attached.",
     processItems: [],
+    artworkAudioUrl: asset("Vico Vecchiotti/Art Piece Info - Vico.m4a"),
   },
 ];
 

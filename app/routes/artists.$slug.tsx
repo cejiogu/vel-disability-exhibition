@@ -19,7 +19,6 @@ export function meta({ params }: Route.MetaArgs) {
 export default function ArtistPage({ params }: Route.ComponentProps) {
   const artist = getArtistBySlug(params.slug);
   const [activeStep, setActiveStep] = useState(0);
-  const [processMode, setProcessMode] = useState<"swipe" | "timeline">("swipe");
   const [showFullVisualDescription, setShowFullVisualDescription] = useState(false);
   const [showFullStatement, setShowFullStatement] = useState(false);
   const [activeSection, setActiveSection] = useState("overview");
@@ -49,7 +48,9 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     {
       id: "notes",
       label: "Notes",
-      visible: Boolean(artist.creationNotes || artist.externalLinks?.length),
+      visible: Boolean(
+        artist.creationNotes || artist.additionalTextAudioUrl || artist.externalLinks?.length
+      ),
     },
   ].filter((section) => section.visible);
 
@@ -68,7 +69,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
 
   useEffect(() => {
     setActiveStep(0);
-    setProcessMode("swipe");
     setShowFullStatement(false);
     setShowFullVisualDescription(false);
   }, [artist.slug]);
@@ -99,10 +99,16 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     return () => {
       observer.disconnect();
     };
-  }, [artist.creationNotes, artist.externalLinks?.length, artist.poemEmbedUrl, artist.webglEmbedUrl]);
+  }, [
+    artist.additionalTextAudioUrl,
+    artist.creationNotes,
+    artist.externalLinks?.length,
+    artist.poemEmbedUrl,
+    artist.webglEmbedUrl,
+  ]);
 
   useEffect(() => {
-    if (!artist.processItems.length || processMode !== "timeline") {
+    if (!artist.processItems.length) {
       return;
     }
 
@@ -136,7 +142,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     return () => {
       observer.disconnect();
     };
-  }, [artist.processItems.length, processMode]);
+  }, [artist.processItems.length]);
 
   const currentArtistIndex = artists.findIndex(
     (artistItem) => artistItem.slug === artist.slug
@@ -148,9 +154,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
       ? artists[currentArtistIndex + 1]
       : null;
 
-  const activeProcessItem = artist.processItems[activeStep];
   const hasCreationNotes = Boolean(artist.creationNotes);
-  const processStepCount = artist.processItems.length;
 
   function jumpToSection(sectionId: string) {
     const sectionElement = document.getElementById(sectionId);
@@ -168,14 +172,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     if (artworkAudioRef.current) {
       artworkAudioRef.current.playbackRate = nextRate;
     }
-  }
-
-  function showPreviousProcessStep() {
-    setActiveStep((current) => (current === 0 ? processStepCount - 1 : current - 1));
-  }
-
-  function showNextProcessStep() {
-    setActiveStep((current) => (current === processStepCount - 1 ? 0 : current + 1));
   }
 
   return (
@@ -202,6 +198,16 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         <h1>{artist.title}</h1>
         <p className="lede">By {artist.name}</p>
         <p className="lede">Medium: {artist.medium}</p>
+        <p className="hero-statement">{isStatementLong ? previewStatement : artist.statement}</p>
+        {isStatementLong ? (
+          <button
+            type="button"
+            className="text-toggle text-toggle-light"
+            onClick={() => setShowFullStatement((value) => !value)}
+          >
+            {showFullStatement ? "Show less" : "Read full statement"}
+          </button>
+        ) : null}
       </header>
 
       <nav className="artist-section-nav" aria-label="Artist page sections">
@@ -219,7 +225,56 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
 
       <section id="overview" className="panel panel-main-artwork artist-panel-animate">
         <h2>Main Artwork</h2>
-        {artist.mainArtworkUrl ? (
+        {artist.slug === "chase-and-connor" && artist.poemEmbedUrl ? (
+          <div>
+            <div className="embed-frame-wrap">
+              <iframe
+                src={artist.poemEmbedUrl}
+                title={`${artist.title} embedded poem`}
+                className="embed-frame"
+                allowFullScreen
+              />
+            </div>
+            {artist.poemSourceUrl ? (
+              <div className="hero-actions">
+                <a
+                  href={artist.poemSourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="action action-primary"
+                >
+                  Open Poem In New Tab
+                </a>
+              </div>
+            ) : null}
+          </div>
+        ) : artist.slug === "daniel-enriquez" && artist.webglEmbedUrl ? (
+          <div>
+            <p className="field-note">
+              Explore Daniel's WebGL version directly below.
+            </p>
+            <div className="webgl-frame-wrap">
+              <iframe
+                src={artist.webglEmbedUrl}
+                title={`${artist.title} WebGL environment`}
+                className="webgl-frame"
+                allowFullScreen
+              />
+            </div>
+            {artist.webglOpenUrl ? (
+              <div className="hero-actions">
+                <a
+                  href={artist.webglOpenUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="action action-primary"
+                >
+                  Open WebGL In New Tab
+                </a>
+              </div>
+            ) : null}
+          </div>
+        ) : artist.mainArtworkUrl ? (
           <img
             src={artist.mainArtworkUrl}
             alt={`${artist.title} main artwork`}
@@ -231,37 +286,52 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
             Main artwork image coming soon
           </div>
         )}
+        {(artist.slug !== "chase-and-connor" && artist.slug !== "daniel-enriquez") && (
+          <>
+            <p className="artwork-caption">{isVisualDescriptionLong ? previewVisualDescription : artist.pieceVisualDescription}</p>
+            {isVisualDescriptionLong ? (
+              <button
+                type="button"
+                className="text-toggle"
+                onClick={() => setShowFullVisualDescription((value) => !value)}
+              >
+                {showFullVisualDescription ? "Show less" : "Read full visual description"}
+              </button>
+            ) : null}
+          </>
+        )}
       </section>
 
-      <section className="panel artist-panel-animate">
-        <h2>Artwork Visual Description</h2>
-        <p>{isVisualDescriptionLong ? previewVisualDescription : artist.pieceVisualDescription}</p>
-        {isVisualDescriptionLong ? (
-          <button
-            type="button"
-            className="text-toggle"
-            onClick={() => setShowFullVisualDescription((value) => !value)}
-          >
-            {showFullVisualDescription ? "Show less" : "Read full visual description"}
-          </button>
-        ) : null}
+      <section id="audio" className="panel artist-panel-animate">
+        <h2>Artwork Audio Overview</h2>
+        {artist.artworkAudioUrl ? (
+          <div className="audio-shell">
+            <audio
+              ref={artworkAudioRef}
+              controls
+              preload="none"
+              src={artist.artworkAudioUrl}
+              className="audio-player"
+            >
+              Your browser does not support audio playback.
+            </audio>
+            <div className="audio-tools">
+              <p className="field-note">Playback speed: {playbackRate}x</p>
+              <button
+                type="button"
+                className="action action-secondary action-secondary-light"
+                onClick={setNextPlaybackRate}
+              >
+                Change Speed
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="field-note">Audio tour coming soon.</p>
+        )}
       </section>
 
-      <section className="panel artist-panel-animate">
-        <h2>Artist Statement</h2>
-        <p>{isStatementLong ? previewStatement : artist.statement}</p>
-        {isStatementLong ? (
-          <button
-            type="button"
-            className="text-toggle"
-            onClick={() => setShowFullStatement((value) => !value)}
-          >
-            {showFullStatement ? "Show less" : "Read full statement"}
-          </button>
-        ) : null}
-      </section>
-
-      {artist.poemEmbedUrl ? (
+      {artist.poemEmbedUrl && artist.slug !== "chase-and-connor" ? (
         <section id="poem" className="panel artist-panel-animate">
           <h2>Poem Text</h2>
           <div className="embed-frame-wrap">
@@ -290,36 +360,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         </section>
       ) : null}
 
-      <section id="audio" className="panel artist-panel-animate">
-        <h2>Artwork Audio Tour</h2>
-        {artist.artworkAudioUrl ? (
-          <div className="audio-shell">
-            <audio
-              ref={artworkAudioRef}
-              controls
-              preload="none"
-              src={artist.artworkAudioUrl}
-              className="audio-player"
-            >
-              Your browser does not support audio playback.
-            </audio>
-            <div className="audio-tools">
-              <p className="field-note">Playback speed: {playbackRate}x</p>
-              <button
-                type="button"
-                className="action action-secondary action-secondary-light"
-                onClick={setNextPlaybackRate}
-              >
-                Change Speed
-              </button>
-            </div>
-          </div>
-        ) : (
-          <p className="field-note">Audio tour coming soon.</p>
-        )}
-      </section>
-
-      {artist.webglEmbedUrl ? (
+      {artist.webglEmbedUrl && artist.slug !== "daniel-enriquez" ? (
         <section id="webgl" className="panel panel-webgl artist-panel-animate">
           <h2>Interactive WebGL Environment</h2>
           <p className="field-note">
@@ -355,124 +396,78 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         </p>
         {artist.processItems.length ? (
           <>
-            <div className="process-mode-toggle" role="tablist" aria-label="Creation process view mode">
-              <button
-                type="button"
-                className={`process-mode-button ${processMode === "swipe" ? "is-active" : ""}`}
-                onClick={() => setProcessMode("swipe")}
-              >
-                Swipe Cards
-              </button>
-              <button
-                type="button"
-                className={`process-mode-button ${processMode === "timeline" ? "is-active" : ""}`}
-                onClick={() => setProcessMode("timeline")}
-              >
-                Timeline View
-              </button>
-            </div>
             <p className="timeline-progress" aria-live="polite">
               Step {activeStep + 1} of {artist.processItems.length}
             </p>
-            {processMode === "swipe" ? (
-              <article className="swipe-process-card">
-                <h3>Step {activeStep + 1}</h3>
-                <img
-                  src={activeProcessItem.imageUrl}
-                  alt={`${artist.title} process photo ${activeStep + 1}`}
-                  className="timeline-image"
-                  loading="lazy"
-                />
-                <p className="timeline-label">Visual Description</p>
-                <p>{activeProcessItem.visualDescription}</p>
-                <p className="timeline-label">Audio</p>
-                {activeProcessItem.audioUrl ? (
-                  <audio
-                    controls
-                    preload="none"
-                    src={activeProcessItem.audioUrl}
-                    className="audio-player"
-                  >
-                    Your browser does not support audio playback.
-                  </audio>
-                ) : (
-                  <p className="field-note">Audio coming soon for this step.</p>
-                )}
-                <div className="swipe-controls">
-                  <button
-                    type="button"
-                    className="action action-secondary action-secondary-light"
-                    onClick={showPreviousProcessStep}
-                  >
-                    Previous Step
-                  </button>
-                  <button
-                    type="button"
-                    className="action action-primary"
-                    onClick={showNextProcessStep}
-                  >
-                    Next Step
-                  </button>
-                </div>
-              </article>
-            ) : (
-              <div className="process-timeline" aria-label="Creation process timeline">
-                {artist.processItems.map((item, index) => (
-                  <article
-                    key={item.imageUrl}
-                    className="timeline-step"
-                    ref={(element) => {
-                      stepRefs.current[index] = element;
-                    }}
-                    data-timeline-index={index}
-                  >
-                    <div className="timeline-step-marker" aria-hidden="true">
-                      {index + 1}
-                    </div>
-                    <div className="timeline-step-card">
-                      <h3>Step {index + 1}</h3>
-                      <img
-                        src={item.imageUrl}
-                        alt={`${artist.title} process photo ${index + 1}`}
-                        className="timeline-image"
-                        loading="lazy"
-                      />
-                      <p className="timeline-label">Visual Description</p>
-                      <p>{item.visualDescription}</p>
-                      <p className="timeline-label">Audio</p>
-                      {item.audioUrl ? (
-                        <audio
-                          controls
-                          preload="none"
-                          src={item.audioUrl}
-                          className="audio-player"
-                        >
-                          Your browser does not support audio playback.
-                        </audio>
-                      ) : (
-                        <p className="field-note">Audio coming soon for this step.</p>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
+            <div className="process-timeline" aria-label="Creation process timeline">
+              {artist.processItems.map((item, index) => (
+                <article
+                  key={item.imageUrl}
+                  className="timeline-step"
+                  ref={(element) => {
+                    stepRefs.current[index] = element;
+                  }}
+                  data-timeline-index={index}
+                >
+                  <div className="timeline-step-marker" aria-hidden="true">
+                    {index + 1}
+                  </div>
+                  <div className="timeline-step-card">
+                    <h3>Step {index + 1}</h3>
+                    <img
+                      src={item.imageUrl}
+                      alt={`${artist.title} process photo ${index + 1}`}
+                      className="timeline-image"
+                      loading="lazy"
+                    />
+                    <p className="timeline-label">Visual Description</p>
+                    <p>{item.visualDescription}</p>
+                    <p className="timeline-label">Audio</p>
+                    {item.audioUrl ? (
+                      <audio
+                        controls
+                        preload="none"
+                        src={item.audioUrl}
+                        className="audio-player"
+                      >
+                        Your browser does not support audio playback.
+                      </audio>
+                    ) : (
+                      <p className="field-note">Audio coming soon for this step.</p>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
           </>
         ) : (
           <p className="field-note">Creation-process photos coming soon.</p>
         )}
       </section>
 
-      {artist.creationNotes ? (
+      {artist.creationNotes || artist.additionalTextAudioUrl ? (
         <section id="notes" className="panel artist-panel-animate">
           <h2>Creation Notes</h2>
-          <p>{artist.creationNotes}</p>
+          {artist.creationNotes ? <p>{artist.creationNotes}</p> : null}
+          {artist.additionalTextAudioUrl ? (
+            <>
+              <p className="timeline-label">Creation Notes Audio</p>
+              <audio
+                controls
+                preload="none"
+                src={artist.additionalTextAudioUrl}
+                className="audio-player"
+              >
+                Your browser does not support audio playback.
+              </audio>
+            </>
+          ) : null}
         </section>
       ) : null}
 
-      {artist.externalLinks?.length ? (
+      {artist.externalLinks?.length && artist.slug !== "chase-and-connor" && artist.slug !== "daniel-enriquez" ? (
         <section
-          id={hasCreationNotes ? undefined : "notes"}
+          id={hasCreationNotes || artist.additionalTextAudioUrl ? undefined : "notes"}
           className="panel artist-panel-animate"
         >
           <h2>Additional Material</h2>
