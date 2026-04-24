@@ -32,7 +32,7 @@ function asset(path: string) {
 }
 
 const mediaAssets = import.meta.glob(
-  "../../project_details/**/*.{jpg,jpeg,png,webp,wav,mp3,m4a}",
+  "../../project_details/**/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP,wav,mp3,m4a}",
   {
     eager: true,
     import: "default",
@@ -81,6 +81,7 @@ export const artists: Artist[] = [
     affiliation: "Staff",
     title: "Time Outside Reality",
     medium: "Acrylic on canvas",
+    mainArtworkUrl: asset("Andria Crowjoy/IMG_2580.JPG"),
     statement:
       "In crip time, we reimagine what can happen when we honor our bodies' and minds' true relationship with time, stepping outside society's rigid expectations into something more honest and intrinsic. With ADHD and stroke-related time blindness, I navigate daily life by forcing awareness of time's passage and anchoring myself to routines that mark moments. This piece is one created over four days snowed in at the Constance Saltonstall Foundation for the Arts retreat space. Isolated in the studio, with only grey light and the rhythm of painting, sleeping, and eating, I discovered what time feels like when it belongs to me and truly recognized the tyranny of normative time. Taking four days away to paint feels like an act of defiance and a declaration that time, sometimes, can be suspended. This still life captures a moment of freedom from the expectations to keep time. Painted over a 15-year-old canvas, the visible layers beneath remind me that my past self is always with me and that creating something tangible holds time in a way I could not keep otherwise.",
     pieceVisualDescription:
@@ -158,6 +159,7 @@ export const artists: Artist[] = [
     affiliation: "Staff",
     title: "This is not a frame",
     medium: "Wood, paper, and rocks",
+    mainArtworkUrl: asset("Alison Fromme/IMG_2584.JPG"),
     statement:
       "In this work, I consider possibilities and constraints related to the concept of the frame. Using a familiar object, the picture frame, I question whether it is a container or a window. A frame can capture a single moment in time, as in a still life. It can be an aperture through which we view something happening. It can hold a mirror. I invite viewers to ask, How does a frame help or hinder our understanding of time and experience? And what belongs in a frame, anyway? Certainly not a rock.",
     pieceVisualDescription:
@@ -174,6 +176,7 @@ export const artists: Artist[] = [
     affiliation: "Student",
     title: "Automatic Behavior",
     medium: "Mixed media",
+    mainArtworkUrl: asset("Gillian Gomer/IMG_2566.JPG"),
     statement:
       "My project showcases the oddities of a lesser known symptom of narcolepsy. My disorder is autoimmune: my body attacks the neurological compounds that regulate sleep so I am constantly trying to resist being asleep or awake during the wrong times. When I fail, I experience microsleep, where I simultaneously go through REM while appearing somewhat functional to others. In my work I showcase different forms of my automatic behaviors, with emphasis on how it presents in my education. I chose a mixed media collage approach to collect the unique symptoms and situations I face everyday into one all-encompassing disorder. Time is unclear across focal points, which mimics how I often perceive memories in disjointed segments, adding or subtracting pieces gained or lost during microsleep. I include reflections on how my disorder impacts decisions in daily life which often requires planning ahead to accommodate the unpredictable.",
     pieceVisualDescription:
@@ -233,6 +236,7 @@ export const artists: Artist[] = [
     affiliation: "Student",
     title: "Beach Hat",
     medium: "Upcycled denim, hospital gown, wire",
+    mainArtworkUrl: asset("Ria Gualano/IMG_2593.JPG"),
     statement:
       "Beach Hat is a textile-based diary entry comprised of hospital gown and upcycled denim. The reimagined materials signify the merging of Crohn's Disease into my daily life. They reflect on consequential memories that weave in and out of my present experiences, triggered by certain spaces, sounds, objects, and emotions. The piece began as a recreation of a memory anchored in a specific textile: the floppy hat that shielded my eyes from the sun while I endured waves of pain on a beach. Then, I cut, merged, and sewed, refining certain seams and letting other jagged stitches remain bold. The process of creation reconciled parts of myself that healed invisibly with those immortalized in visible scars. Still other emotional scars I left raw and exposed, such as the inverted seams around the hat's crown. I invite viewers to physically trace the scars sewn into the hat and consider the temporality of their own visible and invisible, healed and ever-negotiating scars.",
     pieceVisualDescription:
