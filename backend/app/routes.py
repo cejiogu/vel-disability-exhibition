@@ -3,6 +3,8 @@ import uuid
 
 from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
+from typing import Optional
+import mimetypes
 
 from .extensions import db
 from .models import Contribution, Upload
