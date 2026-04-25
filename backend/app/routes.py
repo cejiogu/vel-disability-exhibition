@@ -1,9 +1,10 @@
 from pathlib import Path
 import uuid
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, Response, current_app, jsonify, request
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
-from typing import Optional
+from typing import Optional, Tuple
 import mimetypes
 
 from .extensions import db
@@ -34,7 +35,7 @@ def _save_uploaded_file(file_storage, allowed_extensions: set[str]) -> str:
     return f"/uploads/{saved_name}"
 
 
-def _optional_file_path(file_key: str, allowed_extensions: set[str]) -> str | None:
+def _optional_file_path(file_key: str, allowed_extensions: set[str]) -> Optional[str]:
     file_storage = request.files.get(file_key)
     if not file_storage or not file_storage.filename:
         return None
@@ -199,7 +200,11 @@ def create_upload():
 
     if missing:
         return (
-            jsonify(error_payload),
+            jsonify({
+                "error": "Missing required fields",
+                "missing_fields": missing
+            }),
+       
             400,
         )
 
