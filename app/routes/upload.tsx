@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 
 import { postFormData } from "../lib/api";
 import { SiteNav } from "../components/site-nav";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/upload";
 
 export function meta({}: Route.MetaArgs) {

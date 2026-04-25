@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 
 import { postFormData } from "../lib/api";
 import { SiteNav } from "../components/site-nav";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/contribute";
 
 export function meta({}: Route.MetaArgs) {
@@ -132,78 +133,8 @@ export default function Contribute() {
             >
               {statusMessage}
             </p>
-          </div>
-        ) : (
-          <form className="contribution-form" onSubmit={handleSubmit}>
-            <label htmlFor="title">Title</label>
-            <input id="title" name="title" type="text" required />
-
-            <label htmlFor="artist_name">Artist / Contributor Name</label>
-            <input id="artist_name" name="artist_name" type="text" required />
-
-            <label htmlFor="medium">Medium (Optional)</label>
-            <input id="medium" name="medium" type="text" />
-
-            <label htmlFor="disability_experience_context">
-              Disability Experience Context (Optional)
-            </label>
-            <textarea
-              id="disability_experience_context"
-              name="disability_experience_context"
-              rows={3}
-            />
-
-            <label htmlFor="description_text">Description Text</label>
-            <textarea
-              id="description_text"
-              name="description_text"
-              rows={5}
-              required
-            />
-
-            <label htmlFor="alt_text_description">Alt Text Description</label>
-            <textarea
-              id="alt_text_description"
-              name="alt_text_description"
-              rows={4}
-              required
-            />
-
-            <label htmlFor="accessibility_notes">Accessibility Notes (Optional)</label>
-            <textarea
-              id="accessibility_notes"
-              name="accessibility_notes"
-              rows={3}
-            />
-
-            <label htmlFor="audio_file">Audio File (Optional)</label>
-            <input id="audio_file" name="audio_file" type="file" accept="audio/*" />
-
-            <label htmlFor="video_file">Video File (Optional)</label>
-            <input id="video_file" name="video_file" type="file" accept="video/*" />
-
-            <p className="field-note">
-              This form is for the story and context surrounding a contribution.
-              Media uploads are optional and AR assets are handled separately.
-            </p>
-
-            <button type="submit" className="action action-primary">
-              {isSubmitting ? "Saving..." : "Submit Contribution"}
-            </button>
-
-            {statusMessage ? (
-              <p
-                className={`form-status ${
-                  statusKind === "success"
-                    ? "form-status-success"
-                    : "form-status-error"
-                }`}
-              >
-                {statusMessage}
-              </p>
-            ) : null}
-          </form>
-        )}
+          ) : null}
+        </form>
       </section>
     </main>
   );

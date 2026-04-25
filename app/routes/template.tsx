@@ -1,10 +1,9 @@
 import { SiteNav } from "../components/site-nav";
+import { SITE_TITLE } from "../lib/site-metadata";
 
-import type { Route } from "./+types/template";
-
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
-    { title: "Contribution Template | Disability Exhibition" },
+    { title: `${SITE_TITLE} | Contribution Template` },
     {
       name: "description",
       content: "Default contribution template for exhibition QR scans.",

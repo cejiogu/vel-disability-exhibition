@@ -1,8 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { exhibitionTitle } from "../lib/artists";
-import { SiteNav } from "../components/site-nav";
-
 import { SiteNav } from "../components/site-nav";
 import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/scan";

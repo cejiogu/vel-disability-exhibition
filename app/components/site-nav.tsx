@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router";
+import { SITE_TITLE } from "../lib/site-metadata";
 
 type SiteNavProps = {
-  title: string;
+  title?: string;
   showLogo?: boolean;
 };
 
-export function SiteNav({ title, showLogo = false }: SiteNavProps) {
+export function SiteNav({ title = SITE_TITLE, showLogo = false }: SiteNavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function closeMenu() {
