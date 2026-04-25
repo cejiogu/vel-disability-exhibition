@@ -1,10 +1,8 @@
 import { Link } from "react-router";
 import { useState, type FormEvent } from "react";
 
+import { postFormData } from "../lib/api";
 import { SiteNav } from "../components/site-nav";
-import { CONTRIBUTE_ENABLED } from "../lib/feature-flags";
-import { postForm } from "../lib/api";
-import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/contribute";
 
 export function meta({}: Route.MetaArgs) {
@@ -30,28 +28,17 @@ export default function Contribute() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const textFields = [
-      "title",
-      "artist_name",
-      "medium",
-      "disability_experience_context",
-      "description_text",
-      "alt_text_description",
-      "accessibility_notes",
-    ] as const;
+    const selectedImage = formData.get("artwork_image");
 
-    textFields.forEach((field) => {
-      const value = String(formData.get(field) || "").trim();
-      if (value) {
-        formData.set(field, value);
-      } else {
-        formData.delete(field);
-      }
-    });
+    if (!(selectedImage instanceof File) || !selectedImage.size) {
+      setStatusKind("error");
+      setStatusMessage("Please upload an image before submitting.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      await postForm("/contributions", formData);
+      await postFormData("/contributions", formData);
       form.reset();
       setStatusKind("success");
       setStatusMessage("Contribution saved to database.");
@@ -69,7 +56,7 @@ export default function Contribute() {
 
   return (
     <main className="site-shell">
-      <SiteNav />
+      <SiteNav title="Cripping Time Across Realities" showLogo />
 
       <header className="panel panel-strong">
         <p className="eyebrow">Contribution Form</p>
@@ -90,12 +77,60 @@ export default function Contribute() {
 
       <section className="panel">
         <h2>Your Contribution</h2>
-        {!CONTRIBUTE_ENABLED ? (
-          <div className="paused-state" role="status">
-            <h3>Contributions Are Currently Closed</h3>
-            <p>
-              The exhibition is underway, so narrative submissions are paused for
-              now. Upload remains available for work created on site.
+        <form className="contribution-form" onSubmit={handleSubmit}>
+          <label htmlFor="title">Title</label>
+          <input id="title" name="title" type="text" required />
+
+          <label htmlFor="artist_name">Artist Name</label>
+          <input id="artist_name" name="artist_name" type="text" required />
+
+          <label htmlFor="description_text">Description Text</label>
+          <textarea id="description_text" name="description_text" rows={5} required />
+
+          <label htmlFor="alt_text_description">Alt Text Description</label>
+          <textarea
+            id="alt_text_description"
+            name="alt_text_description"
+            rows={4}
+            required
+          />
+
+          <label htmlFor="artwork_image">Artwork Image Upload</label>
+          <input
+            id="artwork_image"
+            name="artwork_image"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            required
+          />
+
+          <label htmlFor="audio_file">Audio Upload (Optional)</label>
+          <input
+            id="audio_file"
+            name="audio_file"
+            type="file"
+            accept="audio/*"
+          />
+
+          <label htmlFor="video_file">Video Upload (Optional)</label>
+          <input
+            id="video_file"
+            name="video_file"
+            type="file"
+            accept="video/*"
+          />
+
+          <button type="submit" className="action action-primary">
+            {isSubmitting ? "Saving..." : "Submit Contribution"}
+          </button>
+
+          {statusMessage ? (
+            <p
+              className={`form-status ${
+                statusKind === "success" ? "form-status-success" : "form-status-error"
+              }`}
+            >
+              {statusMessage}
             </p>
           </div>
         ) : (

@@ -1,19 +1,15 @@
 import type { Route } from "./+types/home";
 import { Link } from "react-router";
-
-import { AdjustableTextSection } from "../components/adjustable-text-section";
+import { exhibitionTitle } from "../lib/artists";
 import { SiteNav } from "../components/site-nav";
-import { exhibitionStatement } from "../content/exhibition-content";
-import { CONTRIBUTE_ENABLED } from "../lib/feature-flags";
-import { SITE_TITLE } from "../lib/site-metadata";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: SITE_TITLE },
+    { title: exhibitionTitle },
     {
       name: "description",
       content:
-        "Home page for the Cripping Time Across Realities arts exhibition.",
+        "Cripping Time Across Realities exhibition statement and navigation.",
     },
   ];
 }
@@ -21,46 +17,22 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   return (
     <main className="site-shell">
-      <SiteNav />
+      <SiteNav title={exhibitionTitle} />
 
-      <header className="hero hero-centered">
-        <h1 className="hero-title">Cripping Time Across Realities Arts Exhibition</h1>
+      <header className="hero hero-exhibition">
+        <h1>{exhibitionTitle}</h1>
+        <h2>Exhibition Statement</h2>
         <p className="lede">
-          Scan exhibition QR codes to open artwork pages, supporting media, and
-          AR-enhanced experiences directly in your phone browser. This site also
-          supports contributor submissions and on-site uploads throughout the exhibition.
+          Cripping Time Across Realities showcases art-based reflections on
+          temporality from seven Cornell students and staff who identify as
+          disabled and/or neurodiverse. Drawing on the concept of "crip time," a
+          non-normative conception of time that originated in disability
+          communities to describe the experiences, wants and needs of disabled
+          bodyminds moving through the world, the exhibition's art and
+          interactive pieces invite users to question time itself: their prior
+          perceptions, their lived experience of it, and what it means to
+          "crip" time.
         </p>
-        <div className="mode-cards">
-          <article className="mode-card">
-            <h2>Upload</h2>
-            <p>
-              Upload is for work created during the exhibition. Add the artwork
-              file and a name so it can be prepared for display.
-            </p>
-          </article>
-          <article className="mode-card">
-            <h2>Contribute</h2>
-            <p>
-              Contribute is for pre-exhibition submissions. Share the story,
-              context, and accessibility details that help represent the work in
-              the exhibition.
-            </p>
-          </article>
-        </div>
-        <div className="hero-actions">
-          {CONTRIBUTE_ENABLED ? (
-            <Link to="/contribute" className="action action-primary">
-              Contribute Before The Exhibition
-            </Link>
-          ) : (
-            <span className="action action-disabled" aria-disabled="true">
-              Contributions Are Currently Closed
-            </span>
-          )}
-          <Link to="/upload" className="action action-secondary">
-            Upload Work Made On Site
-          </Link>
-        </div>
       </header>
 
       <AdjustableTextSection title="Exhibition Statement">
@@ -73,27 +45,38 @@ export default function Home() {
       </AdjustableTextSection>
 
       <section className="panel">
-        <h2>Contributing To The Exhibition</h2>
+        <h2>Browse Artists</h2>
         <p>
-          Before the exhibition begins, contributors can submit the written and
-          reflective context that helps visitors understand a work more deeply.
+          Explore work from 7 exhibition artists. Each artist page includes
+          their piece, statement, visual description, and available audio tour.
         </p>
+        <div className="hero-actions mobile-quick-actions">
+          <Link to="/browse-artwork" className="action action-primary">
+            Browse Artists
+          </Link>
+        </div>
+      </section>
+
+      <section className="panel scan-cta">
+        <h2>Scan A QR Code</h2>
         <p>
-          During the exhibition itself, Upload remains available for newly
-          created work and supporting materials gathered on site.
+          Use your camera to scan exhibition QR codes and open AR experiences.
         </p>
-        <div className="hero-actions">
-          {CONTRIBUTE_ENABLED ? (
-            <Link to="/contribute" className="action action-primary">
-              Go To Contribute
-            </Link>
-          ) : (
-            <span className="action action-disabled" aria-disabled="true">
-              Contribute Unavailable During Exhibition
-            </span>
-          )}
-          <Link to="/upload" className="action action-secondary action-secondary-light">
-            Go To Upload
+        <div className="hero-actions mobile-quick-actions">
+          <Link to="/scan" className="action action-primary">
+            Open QR Scanner
+          </Link>
+        </div>
+      </section>
+
+      <section className="panel">
+        <h2>Augmented Reality Visitor Activity</h2>
+        <p>
+          Click below to open the AR visitor activity experience.
+        </p>
+        <div className="hero-actions mobile-quick-actions">
+          <Link to="/augmented-reality-visitor-activity" className="action action-primary">
+            Open AR Visitor Activity
           </Link>
         </div>
       </section>

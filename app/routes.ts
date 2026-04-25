@@ -2,6 +2,9 @@ import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
   index("routes/home.tsx"),
+  route("browse-artwork", "routes/browse-artwork.tsx"),
+  route("augmented-reality-visitor-activity", "routes/augmented-reality-visitor-activity.tsx"),
+  route("artists/:slug", "routes/artists.$slug.tsx"),
   route("upload", "routes/upload.tsx"),
   route("contribute", "routes/contribute.tsx"),
   route("artwork", "routes/artwork-index.tsx"),

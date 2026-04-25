@@ -50,6 +50,29 @@ npm run build
 
 ## Deployment
 
+### One-Click Render Deployment (Recommended)
+
+This repo includes a Render Blueprint at `render.yaml` that provisions:
+
+- A managed PostgreSQL database
+- A Flask backend service
+- A React Router frontend service
+
+Steps:
+
+1. Push this repository to GitHub.
+2. In Render, click **New +** -> **Blueprint**.
+3. Connect this repository.
+4. Render will detect `render.yaml` and create all services.
+5. Wait for all services to finish deploying.
+6. Open the frontend service URL and share it with your advisor.
+
+Notes:
+
+- `VITE_API_BASE_URL` is wired automatically to the backend service URL with `/api` appended.
+- The backend uses `DATABASE_URL` from the managed Render Postgres instance.
+- Database tables are created during deploy via `flask --app manage.py init-db`.
+
 ### Docker Deployment
 
 To build and run using Docker:

@@ -36,7 +36,7 @@ export async function postJson<T>(
   return data as T;
 }
 
-export async function postForm<T>(path: string, payload: FormData): Promise<T> {
+export async function postFormData<T>(path: string, payload: FormData): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
     body: payload,
@@ -51,10 +51,4 @@ export async function postForm<T>(path: string, payload: FormData): Promise<T> {
   }
 
   return data as T;
-}
-
-export function resolveMediaUrl(path: string | null | undefined): string | null {
-  if (!path) return null;
-  if (/^https?:\/\//i.test(path)) return path;
-  return `${API_ORIGIN}${path}`;
 }

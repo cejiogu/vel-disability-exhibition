@@ -1,4 +1,7 @@
-import { Link } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
+import { exhibitionTitle } from "../lib/artists";
+import { SiteNav } from "../components/site-nav";
 
 import { SiteNav } from "../components/site-nav";
 import { SITE_TITLE } from "../lib/site-metadata";
@@ -18,7 +21,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Scan() {
   return (
     <main className="site-shell">
-      <SiteNav />
+      <SiteNav title={exhibitionTitle} showLogo />
 
       <section className="panel panel-strong">
         <p className="eyebrow">Native Camera Flow</p>

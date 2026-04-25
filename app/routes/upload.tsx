@@ -1,10 +1,8 @@
+import { Link } from "react-router";
 import { useState, type FormEvent } from "react";
 
-import { Link } from "react-router";
-
+import { postFormData } from "../lib/api";
 import { SiteNav } from "../components/site-nav";
-import { postForm } from "../lib/api";
-import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/upload";
 
 export function meta({}: Route.MetaArgs) {
@@ -30,18 +28,17 @@ export default function Upload() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    formData.set("name", String(formData.get("name") || "").trim());
+    const selectedImage = formData.get("artwork_image");
 
-    const email = String(formData.get("email") || "").trim();
-    if (!email) {
-      formData.delete("email");
-    } else {
-      formData.set("email", email);
+    if (!(selectedImage instanceof File) || !selectedImage.size) {
+      setStatusKind("error");
+      setStatusMessage("Please choose an image file before submitting.");
+      return;
     }
 
     setIsSubmitting(true);
     try {
-      await postForm("/uploads", formData);
+      await postFormData("/uploads", formData);
       form.reset();
       setStatusKind("success");
       setStatusMessage("Upload saved to database.");
@@ -57,7 +54,7 @@ export default function Upload() {
 
   return (
     <main className="site-shell">
-      <SiteNav />
+      <SiteNav title="Cripping Time Across Realities" showLogo />
 
       <header className="panel panel-strong">
         <p className="eyebrow">Upload Form</p>
@@ -79,22 +76,25 @@ export default function Upload() {
         </p>
         <form className="contribution-form" onSubmit={handleSubmit}>
           <label htmlFor="name">Name</label>
-          <input id="name" name="name" type="text" autoComplete="name" required />
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            required
+          />
 
           <label htmlFor="email">Email</label>
           <input id="email" name="email" type="email" autoComplete="email" />
 
-          <label htmlFor="artwork_file">Artwork Image</label>
+          <label htmlFor="artwork_image">Upload Image (JPEG or PNG)</label>
           <input
-            id="artwork_file"
-            name="artwork_file"
+            id="artwork_image"
+            name="artwork_image"
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png"
             required
           />
-          <p className="field-note">
-            Upload a photo of the piece created during the exhibition.
-          </p>
 
           <button type="submit" className="action action-primary">
             {isSubmitting ? "Saving..." : "Submit Upload"}

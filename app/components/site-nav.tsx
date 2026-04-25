@@ -1,74 +1,54 @@
-import { useEffect, useId, useState } from "react";
-import { NavLink, useLocation } from "react-router";
+import { useState } from "react";
+import { Link, NavLink } from "react-router";
 
-import { CONTRIBUTE_ENABLED } from "../lib/feature-flags";
+type SiteNavProps = {
+  title: string;
+  showLogo?: boolean;
+};
 
-export function SiteNav() {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-  const menuId = useId();
+export function SiteNav({ title, showLogo = false }: SiteNavProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
+  function closeMenu() {
+    setIsMenuOpen(false);
+  }
 
   return (
     <nav className="site-nav" aria-label="Primary">
-      {isOpen ? (
-        <button
-          type="button"
-          className="menu-backdrop"
-          aria-label="Close navigation menu"
-          onClick={() => setIsOpen(false)}
-        />
+      {showLogo ? (
+        <Link to="/" className="logo-home" aria-label="Go to home page">
+          <img src="/vel-logo.jpeg" alt="Virtual Embodiment Lab logo" />
+        </Link>
       ) : null}
 
-      <div className="site-nav-mobile-bar">
-        <button
-          type="button"
-          className="menu-toggle"
-          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={isOpen}
-          aria-controls={menuId}
-          onClick={() => setIsOpen((value) => !value)}
-        >
-          <span className="menu-toggle-label">Menu</span>
-          <span className="menu-toggle-icon" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </span>
-        </button>
+      <div className="site-branding" aria-label="Exhibition name">
+        {title}
       </div>
 
-      <div
-        id={menuId}
-        className={`site-nav-links${isOpen ? " site-nav-links-open" : ""}`}
-      >
-        <NavLink to="/" end className="nav-link">
-          Home
-        </NavLink>
-        <NavLink to="/artwork" className="nav-link">
-          Browse Artwork
-        </NavLink>
-        <NavLink to="/audio" className="nav-link">
-          Audio Tour
-        </NavLink>
-        <NavLink to="/activity" className="nav-link">
-          Visitor Activity
-        </NavLink>
-        <NavLink to="/upload" className="nav-link">
-          Upload
-        </NavLink>
-        {CONTRIBUTE_ENABLED ? (
-          <NavLink to="/contribute" className="nav-link">
-            Contribute
+      <div className="site-nav-menu">
+        <button
+          type="button"
+          className="nav-menu-toggle"
+          aria-expanded={isMenuOpen}
+          aria-controls="site-nav-links"
+          onClick={() => setIsMenuOpen((value) => !value)}
+        >
+          Menu
+        </button>
+        <div id="site-nav-links" className={`site-nav-links ${isMenuOpen ? "is-open" : ""}`}>
+          <NavLink to="/" end className="nav-link" onClick={closeMenu}>
+            Home
           </NavLink>
-        ) : (
-          <span className="nav-link nav-link-disabled" aria-disabled="true">
-            Contribute
-          </span>
-        )}
+          <NavLink to="/browse-artwork" className="nav-link" onClick={closeMenu}>
+            Browse Artwork
+          </NavLink>
+          <NavLink to="/augmented-reality-visitor-activity" className="nav-link" onClick={closeMenu}>
+            Augmented Reality Visitor Activity
+          </NavLink>
+          <NavLink to="/scan" className="nav-link nav-link-scan" onClick={closeMenu}>
+            Scan
+          </NavLink>
+        </div>
       </div>
     </nav>
   );
