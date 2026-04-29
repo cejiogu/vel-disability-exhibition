@@ -65,15 +65,7 @@ export default function BrowseArtwork() {
         {artists.map((artist) => {
           return (
             <article key={artist.slug} className="art-card">
-              {artist.slug === "daniel-enriquez" && artist.webglEmbedUrl ? (
-                <div className="card-image-link card-embed-container">
-                  <iframe
-                    src={artist.webglEmbedUrl}
-                    title={`${artist.name} WebGL artwork`}
-                    className="card-embed"
-                  />
-                </div>
-              ) : artist.mainArtworkUrl ? (
+              {artist.mainArtworkUrl ? (
                 <Link to={`/artists/${artist.slug}`} className="card-image-link">
                   <img
                     src={artist.mainArtworkUrl}
@@ -82,6 +74,14 @@ export default function BrowseArtwork() {
                     loading="lazy"
                   />
                 </Link>
+              ) : artist.slug === "daniel-enriquez" && artist.webglEmbedUrl ? (
+                <div className="card-image-link card-embed-container">
+                  <iframe
+                    src={artist.webglEmbedUrl}
+                    title={`${artist.name} WebGL artwork`}
+                    className="card-embed"
+                  />
+                </div>
               ) : (
                 <Link to={`/artists/${artist.slug}`} className="card-image-link">
                   <div className="art-card-placeholder" role="img" aria-label={`Artwork by ${artist.name}`}>
