@@ -263,38 +263,9 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         <section id="process" className="panel panel-process-journey artist-panel-animate">
           <h2>Creation Process</h2>
           <p className="field-note">
-            Explore Daniel's WebGL version directly below.
+            {artist.processLabel ??
+              "Below are photos the artist selected to represent their art piece's creation process."}
           </p>
-          <div className="webgl-frame-wrap">
-            <iframe
-              src={artist.webglEmbedUrl}
-              title={`${artist.title} WebGL environment`}
-              className="webgl-frame"
-              allowFullScreen
-            />
-          </div>
-          {artist.webglOpenUrl ? (
-            <div className="hero-actions">
-              <a
-                href={artist.webglOpenUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="action action-primary"
-              >
-                Open WebGL In New Tab
-              </a>
-            </div>
-          ) : null}
-        </section>
-      ) : null}
-
-      <section id="process" className="panel panel-process-journey artist-panel-animate">
-        <h2>Creation Process</h2>
-        <p className="field-note">
-          Below are photos the artist selected to represent their art piece’s
-          creation process.
-        </p>
-        {artist.processItems.length ? (
           <div className="process-timeline" aria-label="Creation process timeline">
             {artist.processItems.map((item, index) => (
               <article key={item.imageUrl} className="timeline-step">
@@ -325,10 +296,8 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
               </article>
             ))}
           </div>
-        ) : (
-          <p className="field-note">Creation-process photos coming soon.</p>
-        )}
-      </section>
+        </section>
+      ) : null}
 
       {artist.creationNotes || artist.additionalTextAudioUrl ? (
         <section id="notes" className="panel artist-panel-animate">

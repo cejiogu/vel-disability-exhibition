@@ -164,12 +164,6 @@ export const artists: Artist[] = [
     interactionStatement:
       "This piece is interactive and takes place inside a VR headset. An RA will assist you in and out of the headset.",
     interactionAudioUrl: asset("Daniel Enriquez/Interaction/Interaction - Daniel.m4a"),
-    externalLinks: [
-      {
-        label: "Open WebGL version package",
-        href: "https://drive.google.com/file/d/1uqWtSwt2FxYXm8s9Ob-CM90GPA2egsmq/view?usp=drive_link",
-      },
-    ],
   },
   {
     slug: "alison-fromme",
@@ -342,19 +336,19 @@ settling into an unsettled landscape.`,
       {
         imageUrl: asset("Vico Vecchiotti/Photo 1 + Audio Tour/unnamed.jpg"),
         visualDescription:
-          "Process photo from Vico's creation of Uphill/Downhill.",
+          "Dark green patterned fabric with thick lines embroidered in light green and thin topographic lines embroidered in white. A woven couch peeks out from the background.",
         audioUrl: asset("Vico Vecchiotti/Photo 1 + Audio Tour/Photo 1 - Vico.m4a"),
       },
       {
         imageUrl: asset("Vico Vecchiotti/Photo 2 + Audio Tour/Picture3.jpg"),
         visualDescription:
-          "Process photo from Vico's creation of Uphill/Downhill.",
+          "A hand holds up dark green patterned fabric with thick lines embroidered in light green and thin topographic lines embroidered in white. A woven couch and pillow lie underneath in the background.",
         audioUrl: asset("Vico Vecchiotti/Photo 2 + Audio Tour/Photo 2 - Vico.m4a"),
       },
       {
         imageUrl: asset("Vico Vecchiotti/Photo 3 + Audio Tour/Picture1.jpg"),
         visualDescription:
-          "Process photo from Vico's creation of Uphill/Downhill.",
+          "An unfolded napkin sitting atop the patterned fabric with thick lines embroidered in dark red and thin topographic lines embroidered in white. A long piece of white thread sticks out from a topographic line in-progress.",
         audioUrl: asset("Vico Vecchiotti/Photo 3 + Audio Tour/Photo 3 - Vico.m4a"),
       },
     ],
