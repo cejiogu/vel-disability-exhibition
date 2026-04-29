@@ -43,12 +43,6 @@ export function SiteNav({ title = SITE_TITLE, showLogo = false }: SiteNavProps) 
           <NavLink to="/browse-artwork" className="nav-link" onClick={closeMenu}>
             Browse Artwork
           </NavLink>
-          <NavLink to="/augmented-reality-visitor-activity" className="nav-link" onClick={closeMenu}>
-            Augmented Reality Visitor Activity
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan" onClick={closeMenu}>
-            Scan
-          </NavLink>
         </div>
       </div>
     </nav>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { artists, exhibitionTitle, getArtistBySlug } from "../lib/artists";
@@ -19,10 +19,8 @@ export function meta({ params }: Route.MetaArgs) {
 
 export default function ArtistPage({ params }: Route.ComponentProps) {
   const artist = getArtistBySlug(params.slug);
-  const [activeStep, setActiveStep] = useState(0);
   const [showFullVisualDescription, setShowFullVisualDescription] = useState(false);
   const [showFullStatement, setShowFullStatement] = useState(false);
-  const stepRefs = useRef<Array<HTMLElement | null>>([]);
 
   if (!artist) {
     return (
@@ -51,47 +49,9 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
   }, [artist.slug]);
 
   useEffect(() => {
-    setActiveStep(0);
     setShowFullStatement(false);
     setShowFullVisualDescription(false);
   }, [artist.slug]);
-
-  useEffect(() => {
-    if (!artist.processItems.length) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const stepIndex = Number(
-              (entry.target as HTMLElement).dataset.timelineIndex
-            );
-
-            if (!Number.isNaN(stepIndex)) {
-              setActiveStep(stepIndex);
-            }
-          }
-        });
-      },
-      {
-        root: null,
-        threshold: 0.6,
-        rootMargin: "-20% 0px -35% 0px",
-      }
-    );
-
-    stepRefs.current.forEach((stepElement) => {
-      if (stepElement) {
-        observer.observe(stepElement);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [artist.processItems.length]);
 
   const currentArtistIndex = artists.findIndex(
     (artistItem) => artistItem.slug === artist.slug
@@ -126,7 +86,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         ) : null}
 
         <div className="audio-shell">
-          <h2 className="hero-audio-heading">Artwork Audio Overview</h2>
           {artist.artworkAudioUrl ? (
             <>
               <audio
@@ -145,7 +104,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
       </header>
 
       <section id="overview" className="panel panel-main-artwork artist-panel-animate">
-        <h2>Main Artwork</h2>
         {artist.slug === "chase-and-connor" && artist.poemEmbedUrl ? (
           <div>
             <div className="embed-frame-wrap">
@@ -282,39 +240,26 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
       ) : null}
 
       <section id="process" className="panel panel-process-journey artist-panel-animate">
-        <h2>Creation Process Journey</h2>
+        <h2>Creation Process</h2>
         <p className="field-note">
-          Follow the timeline below. Each step shows a process photo with its visual description directly underneath.
+          Below are photos the artist selected to represent their art piece’s
+          creation process.
         </p>
         {artist.processItems.length ? (
-          <>
-            <p className="timeline-progress" aria-live="polite">
-              Step {activeStep + 1} of {artist.processItems.length}
-            </p>
-            <div className="process-timeline" aria-label="Creation process timeline">
-              {artist.processItems.map((item, index) => (
-                <article
-                  key={item.imageUrl}
-                  className="timeline-step"
-                  ref={(element) => {
-                    stepRefs.current[index] = element;
-                  }}
-                  data-timeline-index={index}
-                >
-                  <div className="timeline-step-marker" aria-hidden="true">
-                    {index + 1}
-                  </div>
+          <div className="process-timeline" aria-label="Creation process timeline">
+            {artist.processItems.map((item, index) => (
+              <article key={item.imageUrl} className="timeline-step">
+                <div className="timeline-step-marker" aria-hidden="true">
+                  {index + 1}
+                </div>
                   <div className="timeline-step-card">
-                    <h3>Step {index + 1}</h3>
                     <img
                       src={item.imageUrl}
                       alt={`${artist.title} process photo ${index + 1}`}
                       className="timeline-image"
                       loading="lazy"
                     />
-                    <p className="timeline-label">Visual Description</p>
                     <p>{item.visualDescription}</p>
-                    <p className="timeline-label">Audio</p>
                     {item.audioUrl ? (
                       <audio
                         controls
@@ -328,10 +273,9 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
                       <p className="field-note">Audio coming soon for this step.</p>
                     )}
                   </div>
-                </article>
-              ))}
-            </div>
-          </>
+              </article>
+            ))}
+          </div>
         ) : (
           <p className="field-note">Creation-process photos coming soon.</p>
         )}
@@ -339,20 +283,17 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
 
       {artist.creationNotes || artist.additionalTextAudioUrl ? (
         <section id="notes" className="panel artist-panel-animate">
-          <h2>Creation Notes</h2>
+          <h2>Additional Notes from the Creation Process</h2>
           {artist.creationNotes ? <p>{artist.creationNotes}</p> : null}
           {artist.additionalTextAudioUrl ? (
-            <>
-              <p className="timeline-label">Creation Notes Audio</p>
-              <audio
-                controls
-                preload="none"
-                src={artist.additionalTextAudioUrl}
-                className="audio-player"
-              >
-                Your browser does not support audio playback.
-              </audio>
-            </>
+            <audio
+              controls
+              preload="none"
+              src={artist.additionalTextAudioUrl}
+              className="audio-player"
+            >
+              Your browser does not support audio playback.
+            </audio>
           ) : null}
         </section>
       ) : null}

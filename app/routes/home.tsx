@@ -40,38 +40,15 @@ export default function Home() {
       </header>
       
       <section className="panel">
-        <h2>Browse Artists</h2>
+        <h2>Browse Artwork</h2>
         <p>
-          Explore work from 7 exhibition artists. Each artist page includes
-          their piece, statement, visual description, and available audio tour.
+          Learn more about art from the seven exhibition artists. Each artist
+          page includes their art piece, artist statement, creation process,
+          and audio tour.
         </p>
         <div className="hero-actions mobile-quick-actions">
           <Link to="/browse-artwork" className="action action-primary">
-            Browse Artists
-          </Link>
-        </div>
-      </section>
-
-      <section className="panel scan-cta">
-        <h2>Scan A QR Code</h2>
-        <p>
-          Use your camera to scan exhibition QR codes and open AR experiences.
-        </p>
-        <div className="hero-actions mobile-quick-actions">
-          <Link to="/scan" className="action action-primary">
-            Open QR Scanner
-          </Link>
-        </div>
-      </section>
-
-      <section className="panel">
-        <h2>Augmented Reality Visitor Activity</h2>
-        <p>
-          Click below to open the AR visitor activity experience.
-        </p>
-        <div className="hero-actions mobile-quick-actions">
-          <Link to="/augmented-reality-visitor-activity" className="action action-primary">
-            Open AR Visitor Activity
+            Browse Artwork
           </Link>
         </div>
       </section>

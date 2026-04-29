@@ -1,2 +1,1 @@
-export const SITE_TITLE = "Cripping Time Across Realities Exhibition";
-
+export const SITE_TITLE = "Cripping Time Across Realities";

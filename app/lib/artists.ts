@@ -39,7 +39,7 @@ const mediaAssets = import.meta.glob(
   }
 ) as Record<string, string>;
 
-export const exhibitionTitle = "Cripping Time Across Realities Arts Exhibition";
+export const exhibitionTitle = "Cripping Time Across Realities";
 
 export const artists: Artist[] = [
   {
