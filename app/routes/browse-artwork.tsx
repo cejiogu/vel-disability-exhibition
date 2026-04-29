@@ -26,7 +26,8 @@ export default function BrowseArtwork() {
       <header className="hero">
         <h1>Browse Artwork</h1>
         <p className="lede">
-          Explore each contributor's art piece, artist statement, creation process, and audio tour. Tap any card to open the full artist page.
+          Explore each contributor's art piece, artist statement, creation
+          process, and audio tour. Tap any card to open the full artist page.
         </p>
       </header>
 

@@ -263,55 +263,83 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         <section id="process" className="panel panel-process-journey artist-panel-animate">
           <h2>Creation Process</h2>
           <p className="field-note">
-            {artist.processLabel || "Below are photos the artist selected to represent their art piece's creation process."}
+            Explore Daniel's WebGL version directly below.
           </p>
-          <div className="process-gallery">
-            {artist.processItems.map((item) => (
-              <article key={item.imageUrl} className="process-gallery-item">
-                <div
-                  className={`process-item-image ${artist.slug === "chase-and-connor" ? "process-item-image-featured" : ""}`}
-                >
-                  <img
-                    src={item.imageUrl}
-                    alt={item.visualDescription}
-                    loading="lazy"
-                  />
-                </div>
-                <div className="process-item-content">
-                  <p className="process-item-text">{item.visualDescription}</p>
-                  {item.audioUrl ? (
-                    <audio
-                      controls
-                      preload="none"
-                      src={item.audioUrl}
-                      className="audio-player"
-                      style={{ marginTop: "0.5rem", width: "100%" }}
-                    >
-                      Your browser does not support audio playback.
-                    </audio>
-                  ) : null}
-                </div>
-              </article>
-            ))}
+          <div className="webgl-frame-wrap">
+            <iframe
+              src={artist.webglEmbedUrl}
+              title={`${artist.title} WebGL environment`}
+              className="webgl-frame"
+              allowFullScreen
+            />
           </div>
+          {artist.webglOpenUrl ? (
+            <div className="hero-actions">
+              <a
+                href={artist.webglOpenUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="action action-primary"
+              >
+                Open WebGL In New Tab
+              </a>
+            </div>
+          ) : null}
         </section>
       ) : null}
 
+      <section id="process" className="panel panel-process-journey artist-panel-animate">
+        <h2>Creation Process</h2>
+        <p className="field-note">
+          Below are photos the artist selected to represent their art piece’s
+          creation process.
+        </p>
+        {artist.processItems.length ? (
+          <div className="process-timeline" aria-label="Creation process timeline">
+            {artist.processItems.map((item, index) => (
+              <article key={item.imageUrl} className="timeline-step">
+                <div className="timeline-step-marker" aria-hidden="true">
+                  {index + 1}
+                </div>
+                  <div className="timeline-step-card">
+                    <img
+                      src={item.imageUrl}
+                      alt={`${artist.title} process photo ${index + 1}`}
+                      className="timeline-image"
+                      loading="lazy"
+                    />
+                    <p>{item.visualDescription}</p>
+                    {item.audioUrl ? (
+                      <audio
+                        controls
+                        preload="none"
+                        src={item.audioUrl}
+                        className="audio-player"
+                      >
+                        Your browser does not support audio playback.
+                      </audio>
+                    ) : (
+                      <p className="field-note">Audio coming soon for this step.</p>
+                    )}
+                  </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="field-note">Creation-process photos coming soon.</p>
+        )}
+      </section>
+
       {artist.creationNotes || artist.additionalTextAudioUrl ? (
         <section id="notes" className="panel artist-panel-animate">
-          {artist.creationNotesLabel ? (
-            <h2>{artist.creationNotesLabel}</h2>
-          ) : null}
-          {typeof artist.creationNotes === "string" ? (
-            <p style={{ whiteSpace: "pre-wrap" }}>{artist.creationNotes}</p>
-          ) : null}
+          <h2>Additional Notes from the Creation Process</h2>
+          {artist.creationNotes ? <p>{artist.creationNotes}</p> : null}
           {artist.additionalTextAudioUrl ? (
             <audio
               controls
               preload="none"
               src={artist.additionalTextAudioUrl}
               className="audio-player"
-              style={{ marginTop: artist.creationNotes ? "0.8rem" : 0 }}
             >
               Your browser does not support audio playback.
             </audio>
