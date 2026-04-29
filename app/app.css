@@ -346,14 +346,14 @@ a {
 
 .card-image-link {
   display: block;
+  width: 100%;
   text-decoration: none;
 }
 
 .art-card-image {
   width: 100%;
-  height: auto;
-  max-height: 380px;
-  object-fit: contain;
+  height: 260px;
+  object-fit: cover;
   display: block;
   background: #f8fbff;
   border-bottom: 2px solid var(--border);
