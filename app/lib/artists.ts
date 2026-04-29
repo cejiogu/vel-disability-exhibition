@@ -54,7 +54,7 @@ export const artists: Artist[] = [
     affiliation: "Student",
     title: "An Ode to Wikipedia",
     medium: "Digital poem",
-    mainArtworkUrl: asset("Chase and Connor/main-cc.png"),
+    mainArtworkUrl: asset("Chase and Connor/Screenshot 2026-04-22 at 10.38.31 AM.png"),
     statement:
       "For as long as we can remember, we have been obsessed with Wikipedia, reading at least one article a day for most of our lives. This unique obsession is partially driven by our experiences as brothers with cerebral palsy because Wikipedia offers us an accessible outlet to learn quickly and on our own time in a standard format. These and many other aspects have made Wikipedia an ideal learning environment as we have learned to thrive with our disabilities. Furthermore, Wikipedia has enriched our view of disability one page at a time by showing us the commonness of rarity. Just as crip time centers on bending time to one's life, Wikipedia has allowed us to bend our learning environment around us.",
     pieceVisualDescription:
@@ -71,6 +71,9 @@ export const artists: Artist[] = [
     ],
     processLabel: "Below are photos the artist selected to represent their art piece's creation process.",
     artworkAudioUrl: asset("Chase and Connor/Art Piece Info - Chase and Connor.m4a"),
+    interactionStatement:
+      "This piece is interactive. Please click the hyperlinks embedded in the poem and explore the Wikipedia pages.",
+    interactionAudioUrl: asset("Chase and Connor/Interaction/Interaction - Chase and Connor.m4a"),
     poemAudioUrl: asset("Chase and Connor/NOT process - art piece/Poem - Chase and Connor.m4a"),
     poemEmbedUrl:
       "https://docs.google.com/presentation/d/1Ybhnyq8pYj0UKgSAY_IuvJHCHCMNslvR/embed?start=false&loop=false&delayms=5000",
@@ -128,9 +131,11 @@ export const artists: Artist[] = [
     ],
     processLabel: "Below are photos the artist selected to represent their art piece's creation process.",
     artworkAudioUrl: asset("Andria Crowjoy/Art Piece Info - Andria.m4a"),
+    additionalTextAudioUrl: asset("Andria Crowjoy/Additional Text (link)/Additional Text - Andria.m4a"),
     creationNotesLabel: "Additional Notes from the Creation Process",
     creationNotes:
       "Retreat space where this piece was created: https://www.saltonstall.org/retreat/retreat-space/",
+    interactionStatement: "Physical interaction with this piece is optional.",
     interactionAudioUrl: asset("Andria Crowjoy/Interaction/Andria - Interaction.m4a"),
   },
   {
@@ -156,6 +161,8 @@ export const artists: Artist[] = [
     artworkAudioUrl: asset("Daniel Enriquez/Art Piece Audio Tour/bdaud2.wav"),
     webglEmbedUrl: "/brain-drain-webgl/index.html",
     webglOpenUrl: "/brain-drain-webgl/index.html",
+    interactionStatement:
+      "This piece is interactive and takes place inside a VR headset. An RA will assist you in and out of the headset.",
     interactionAudioUrl: asset("Daniel Enriquez/Interaction/Interaction - Daniel.m4a"),
     externalLinks: [
       {
@@ -199,6 +206,8 @@ under heat and pressure
 settling into an unsettled landscape.`,
     poemAudioUrl: asset("Alison Fromme/Additional Text/Additional Text - Alison.m4a"),
     creationNotesLabel: "Poem",
+    interactionStatement:
+      "This piece is interactive. Feel free to pick up -- or take -- a small rock from the pile. Please do not touch the frames or the bigger rocks attached to them. Thank you!",
     interactionAudioUrl: asset("Alison Fromme/Interaction/Alison - Interaction.m4a"),
   },
   {
@@ -256,6 +265,9 @@ settling into an unsettled landscape.`,
     ],
     processLabel: "Below are photos the artist selected to represent their art piece's creation process.",
     artworkAudioUrl: asset("Gillian Gomer/Art Piece Info - Gillian.m4a"),
+    interactionStatement: "This piece is interactive. Feel free to flip through the notebooks.",
+    interactionAudioUrl: asset("Gillian Gomer/Interaction/Interaction - Gillian.m4a"),
+    additionalTextAudioUrl: asset("Gillian Gomer/3. Additional Text/Additional Text - Gillian.m4a"),
     creationNotesLabel: "Additional Notes from the Creation Process",
     creationNotes:
       "I initially left the call for art pieces in my inbox for a few days, unsure whether I could invest the time to make something that felt like me. I eventually chose to do it as a self-motivator. Art used to be central to my life, but perfectionism became my enemy, and I stopped creating to avoid disappointment. Big ideas swarmed for months while I delayed starting because I wanted a perfect plan. After years of dismissal before diagnosis, I still question the legitimacy of my own experience. In the end I spent three days panicking on my couch before deciding to trust the process, make a mess, and let imperfection show.",
@@ -311,6 +323,8 @@ settling into an unsettled landscape.`,
     ],
     processLabel: "Below are photos the artist selected to represent their art piece's creation process.",
     artworkAudioUrl: asset("Ria Gualano/Art Piece Info - Ria.m4a"),
+    interactionStatement:
+      "This piece is interactive. Feel free to touch. If you'd like, you may take the hat off the mannequin head. When you are done interacting, please return the hat to the mannequin. It is alright if the hat does not sit exactly as it did before.",
     interactionAudioUrl: asset("Ria Gualano/Interaction/Interaction - Ria.m4a"),
   },
   {
@@ -319,6 +333,7 @@ settling into an unsettled landscape.`,
     affiliation: "Staff",
     title: "Uphill/Downhill",
     medium: "Embroidery and applique on cotton",
+    mainArtworkUrl: asset("Vico Vecchiotti/IMG_2636.JPG"),
     statement:
       "The green lines represent routes I take often to and from work, to and from my cardiologist and physical therapist, and to and from the ER, while the white lines represent a partial topographic map of the area. Since I cannot drive, I am beholden to bus schedules, walking, or rideshare apps. Though I only live a five-minute drive from work, my commute is usually between 30 and 45 minutes, or five minutes but at significant cost. Getting anywhere takes longer and uses more energy, or else costs more money, and I still end up exhausted and lose more time recovering.",
     pieceVisualDescription:
@@ -345,8 +360,11 @@ settling into an unsettled landscape.`,
     ],
     processLabel: "Below are photos the artist selected to represent their art piece's creation process.",
     artworkAudioUrl: asset("Vico Vecchiotti/Art Piece Info - Vico.m4a"),
+    additionalTextAudioUrl: asset("Vico Vecchiotti/Additional Text/Additional Text - Vico.m4a"),
     creationNotesLabel: "Additional Notes from the Creation Process",
-    creationNotes: asset("Vico Vecchiotti/Additional Text/Additional Text - Vico.docx") ? "See additional notes." : undefined,
+    creationNotes:
+      "Embroidery can be incredibly tedious, which is part of why I chose it as my medium: Traveling to and from the same few places every day is also very tedious. For my travel routes I used the backstitch, which is a very wasteful stitch. You use twice as much thread traveling the same distance, much like moving while disabled uses more energy.",
+    interactionStatement: "This piece is interactive. Feel free to touch.",
     interactionAudioUrl: asset("Vico Vecchiotti/Interaction/Interaction - Vico.m4a"),
   },
 ];

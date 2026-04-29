@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { artists, exhibitionTitle, getArtistBySlug } from "../lib/artists";
@@ -99,6 +99,29 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
             <p className="lede">Audio tour coming soon.</p>
           )}
         </div>
+
+        {artist.interactionStatement || artist.interactionAudioUrl ? (
+          <div className="audio-shell interaction-note-shell">
+            <p className="field-note interaction-note-heading">
+              Interaction Notes
+            </p>
+            {artist.interactionStatement ? (
+              <p className="hero-statement" style={{ marginBottom: "0.8rem" }}>
+                {artist.interactionStatement}
+              </p>
+            ) : null}
+            {artist.interactionAudioUrl ? (
+              <audio
+                controls
+                preload="none"
+                src={artist.interactionAudioUrl}
+                className="audio-player audio-player-hero"
+              >
+                Your browser does not support audio playback.
+              </audio>
+            ) : null}
+          </div>
+        ) : null}
       </header>
 
       <section id="overview" className="panel panel-main-artwork artist-panel-animate">
@@ -112,6 +135,17 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
                 allowFullScreen
               />
             </div>
+            {artist.poemAudioUrl ? (
+              <audio
+                controls
+                preload="none"
+                src={artist.poemAudioUrl}
+                className="audio-player"
+                style={{ marginTop: "1rem" }}
+              >
+                Your browser does not support audio playback.
+              </audio>
+            ) : null}
             {artist.poemSourceUrl ? (
               <div className="hero-actions">
                 <a
@@ -182,7 +216,9 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
       {artist.poemText && artist.slug === "alison-fromme" ? (
         <section id="poem" className="panel artist-panel-animate">
           <h2>Poem</h2>
-          <p style={{ whiteSpace: "pre-line", lineHeight: "1.8" }}>{artist.poemText}</p>
+          <p style={{ whiteSpace: "pre-line", lineHeight: "1.8", color: "#0f2540" }}>
+            {artist.poemText}
+          </p>
           {artist.poemAudioUrl ? (
             <>
               <audio
@@ -220,22 +256,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
               </a>
             </div>
           ) : null}
-          <p className="field-note">
-            If the embed does not load, use the link in Additional Material.
-          </p>
-        </section>
-      ) : null}
-
-      {artist.poemAudioUrl && artist.slug === "chase-and-connor" ? (
-        <section id="poem-audio" className="panel artist-panel-animate">
-          <audio
-            controls
-            preload="none"
-            src={artist.poemAudioUrl}
-            className="audio-player"
-          >
-            Your browser does not support audio playback.
-          </audio>
         </section>
       ) : null}
 
@@ -245,24 +265,27 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
           <p className="field-note">
             {artist.processLabel || "Below are photos the artist selected to represent their art piece's creation process."}
           </p>
-          <div className="process-timeline" aria-label="Creation process">
-            {artist.processItems.map((item, index) => (
-              <article key={item.imageUrl} className="timeline-step">
-                <div className="timeline-step-card">
+          <div className="process-gallery">
+            {artist.processItems.map((item) => (
+              <article key={item.imageUrl} className="process-gallery-item">
+                <div
+                  className={`process-item-image ${artist.slug === "chase-and-connor" ? "process-item-image-featured" : ""}`}
+                >
                   <img
                     src={item.imageUrl}
-                    alt={`${artist.title} process photo`}
-                    className="timeline-image"
+                    alt={item.visualDescription}
                     loading="lazy"
                   />
-                  <p>{item.visualDescription}</p>
+                </div>
+                <div className="process-item-content">
+                  <p className="process-item-text">{item.visualDescription}</p>
                   {item.audioUrl ? (
                     <audio
                       controls
                       preload="none"
                       src={item.audioUrl}
                       className="audio-player"
-                      style={{ marginTop: "0.5rem" }}
+                      style={{ marginTop: "0.5rem", width: "100%" }}
                     >
                       Your browser does not support audio playback.
                     </audio>
@@ -274,30 +297,21 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         </section>
       ) : null}
 
-      {artist.creationNotes || artist.poemText === undefined ? (
+      {artist.creationNotes || artist.additionalTextAudioUrl ? (
         <section id="notes" className="panel artist-panel-animate">
           {artist.creationNotesLabel ? (
             <h2>{artist.creationNotesLabel}</h2>
           ) : null}
-          {artist.creationNotes ? (
+          {typeof artist.creationNotes === "string" ? (
             <p style={{ whiteSpace: "pre-wrap" }}>{artist.creationNotes}</p>
           ) : null}
-        </section>
-      ) : null}
-
-      {artist.interactionStatement || artist.interactionAudioUrl ? (
-        <section id="interaction" className="panel artist-panel-animate">
-          <h2>Interaction Notes</h2>
-          {artist.interactionStatement ? (
-            <p>{artist.interactionStatement}</p>
-          ) : null}
-          {artist.interactionAudioUrl ? (
+          {artist.additionalTextAudioUrl ? (
             <audio
               controls
               preload="none"
-              src={artist.interactionAudioUrl}
+              src={artist.additionalTextAudioUrl}
               className="audio-player"
-              style={{ marginTop: artist.interactionStatement ? "0.5rem" : 0 }}
+              style={{ marginTop: artist.creationNotes ? "0.8rem" : 0 }}
             >
               Your browser does not support audio playback.
             </audio>
@@ -305,7 +319,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         </section>
       ) : null}
 
-      {artist.externalLinks?.length ? (
+      {artist.externalLinks?.length && artist.slug !== "chase-and-connor" ? (
         <section className="panel artist-panel-animate">
           <h2>Additional Material</h2>
           <ul>
