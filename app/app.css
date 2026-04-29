@@ -585,7 +585,6 @@ a {
 .process-item-image img {
   width: 100%;
   height: auto;
-  max-height: 560px;
   object-fit: contain;
   display: block;
   background: #f8fbff;
@@ -1331,9 +1330,9 @@ audio {
   }
 
   .site-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     background: #ffffff;
     border: none;
     border-radius: 0.9rem;
@@ -1343,7 +1342,7 @@ audio {
 
   .site-branding {
     min-width: 0;
-    width: 100%;
+    width: auto;
     font-size: clamp(0.95rem, 3.6vw, 1.1rem);
     line-height: 1.35;
     overflow-wrap: anywhere;
@@ -1351,7 +1350,7 @@ audio {
 
   .site-nav-menu {
     margin-left: 0;
-    width: 100%;
+    width: auto;
     display: flex;
     justify-content: flex-end;
     position: relative;
@@ -1379,12 +1378,12 @@ audio {
     display: grid;
     gap: 0.45rem;
     position: absolute;
-    left: 0;
+    left: auto;
     right: 0;
     top: calc(100% + 0.4rem);
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
+    width: min(320px, calc(100vw - 1.5rem));
+    min-width: 220px;
+    max-width: calc(100vw - 1.5rem);
     padding: 0.55rem;
     background: #ffffff;
     border: none;
@@ -1459,14 +1458,15 @@ audio {
   }
 
   .process-item-image img {
+    width: 100%;
     height: auto;
-    max-height: 72vh;
     object-fit: contain;
     background: #f8fbff;
   }
 
   .process-item-image-featured img {
-    max-height: 86vh;
+    width: 100%;
+    height: auto;
   }
 
   .timeline-step {
@@ -1492,31 +1492,28 @@ audio {
 
 @media (max-width: 420px) {
   .site-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: 0.5rem;
   }
 
   .site-branding {
-    width: 100%;
+    width: auto;
   }
 
   .site-nav-menu {
     margin-left: 0;
-    width: 100%;
-    justify-content: stretch;
-  }
-
-  .nav-menu-toggle {
-    width: 100%;
+    width: auto;
+    justify-content: flex-end;
   }
 
   .site-nav-links.is-open {
-    left: 0;
-    right: auto;
-    min-width: 0;
-    max-width: 100%;
+    left: auto;
+    right: 0;
+    width: min(320px, calc(100vw - 1.5rem));
+    min-width: 200px;
+    max-width: calc(100vw - 1.5rem);
   }
 
   .panel,
