@@ -22,52 +22,41 @@ export default function Home() {
       <header className="hero hero-exhibition">
         <h1>{exhibitionTitle}</h1>
         <h2>Exhibition Statement</h2>
-        <p className="lede">
-          Cripping Time Across Realities showcases art-based reflections on
-          temporality from seven Cornell students and staff who identify as
-          disabled and/or neurodiverse. Drawing on the concept of "crip time," a
-          non-normative conception of time that originated in disability
-          communities to describe the experiences, wants and needs of disabled
-          bodyminds moving through the world, the exhibition's art and
-          interactive pieces invite users to question time itself: their prior
-          perceptions, their lived experience of it, and what it means to
-          "crip" time.
+        <p className="lede" style={{marginBottom: '1em'}}>
+          <em>Cripping Time Across Realities</em> showcases art-based reflections on temporality created by Cornell students and staff who identify as disabled and/or neurodiverse. 
         </p>
+        <p className="lede" style={{marginBottom: '1em'}}>
+          &quot;Crip time&quot; is a conception of time that describes the variety of temporal experiences of disabled and diverse bodyminds. &quot;Rather than bend disabled bodies and minds to meet the clock, crip time bends the clock to meet disabled bodies and minds&quot; (Kafer, 2013). 
+        </p>
+        <p className="lede" style={{marginBottom: '1em'}}>
+          The pieces in this exhibition ask: What does time feel like to different bodies and minds? What are its boundaries, its constraints, its implicit and explicit values? What happens when temporal bounds and norms become slippery, undefined, malleable? 
+        </p>
+        <p className="lede" style={{marginBottom: '1em'}}>
+          Through interactive art and extended reality (XR) technologies, this exhibition invites visitors to question their perceptions of time itself and explore what it means to &quot;crip&quot; time.
+        </p>
+        <p className="lede" style={{marginBottom: '1em'}}>
+          This exhibition was curated by Ria J. Gualano (PhD Candidate, Cornell University Department of Communication) and is supported by the Mellon/ACLS Dissertation Innovation Fellowship. 
+        </p>
+        <div className="audio-shell">
+          <audio
+            controls
+            preload="none"
+            src="/project_details/Updated Exhibition Statement.m4a"
+            className="audio-player audio-player-hero"
+          >
+            Your browser does not support audio playback.
+          </audio>
+        </div>
       </header>
-
+      
       <section className="panel">
-        <h2>Browse Artists</h2>
+        <h2>Browse Artwork</h2>
         <p>
-          Explore work from 7 exhibition artists. Each artist page includes
-          their piece, statement, visual description, and available audio tour.
+          Learn more about art from the seven exhibition artists. Each artist page includes their art piece, artist statement, creation process, and audio tour.
         </p>
         <div className="hero-actions mobile-quick-actions">
           <Link to="/browse-artwork" className="action action-primary">
-            Browse Artists
-          </Link>
-        </div>
-      </section>
-
-      <section className="panel scan-cta">
-        <h2>Scan A QR Code</h2>
-        <p>
-          Use your camera to scan exhibition QR codes and open AR experiences.
-        </p>
-        <div className="hero-actions mobile-quick-actions">
-          <Link to="/scan" className="action action-primary">
-            Open QR Scanner
-          </Link>
-        </div>
-      </section>
-
-      <section className="panel">
-        <h2>Augmented Reality Visitor Activity</h2>
-        <p>
-          Click below to open the AR visitor activity experience.
-        </p>
-        <div className="hero-actions mobile-quick-actions">
-          <Link to="/augmented-reality-visitor-activity" className="action action-primary">
-            Open AR Visitor Activity
+            Browse Artwork
           </Link>
         </div>
       </section>

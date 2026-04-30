@@ -1,8 +1,11 @@
 from pathlib import Path
 import uuid
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, Response, current_app, jsonify, request
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
+from typing import Optional, Tuple
+import mimetypes
 
 from .extensions import db
 from .models import Contribution, Upload
@@ -32,11 +35,23 @@ def _save_uploaded_file(file_storage, allowed_extensions: set[str]) -> str:
     return f"/uploads/{saved_name}"
 
 
-def _optional_file_path(file_key: str, allowed_extensions: set[str]) -> str | None:
+def _optional_file_path(file_key: str, allowed_extensions: set[str]) -> Optional[str]:
     file_storage = request.files.get(file_key)
     if not file_storage or not file_storage.filename:
         return None
     return _save_uploaded_file(file_storage, allowed_extensions)
+
+
+def _file_bytes_and_mime(
+    file: Optional[FileStorage],
+) -> Tuple[Optional[bytes], Optional[str]]:
+    if not file or not file.filename:
+        return None, None
+    data = file.read()
+    if not data:
+        return None, None
+    mime = file.mimetype or mimetypes.guess_type(file.filename)[0]
+    return data, mime or "application/octet-stream"
 
 
 @api.get("/health")
@@ -48,6 +63,36 @@ def health_check():
 def list_contributions():
     records = Contribution.query.order_by(Contribution.created_at.desc()).all()
     return jsonify([record.to_dict() for record in records])
+
+
+@api.get("/contributions/<int:contribution_id>")
+def get_contribution(contribution_id: int):
+    record = Contribution.query.get(contribution_id)
+    if record is None:
+        return jsonify({"error": "Contribution not found"}), 404
+    return jsonify(record.to_dict())
+
+
+@api.get("/contributions/<int:contribution_id>/media/audio")
+def serve_contribution_audio(contribution_id: int):
+    record = Contribution.query.get(contribution_id)
+    if record is None or not record.audio_data:
+        return jsonify({"error": "Not found"}), 404
+    return Response(
+        record.audio_data,
+        mimetype=record.audio_mime_type or "application/octet-stream",
+    )
+
+
+@api.get("/contributions/<int:contribution_id>/media/video")
+def serve_contribution_video(contribution_id: int):
+    record = Contribution.query.get(contribution_id)
+    if record is None or not record.video_data:
+        return jsonify({"error": "Not found"}), 404
+    return Response(
+        record.video_data,
+        mimetype=record.video_mime_type or "application/octet-stream",
+    )
 
 
 @api.post("/contributions")
@@ -97,6 +142,9 @@ def create_contribution():
     record = Contribution(
         title=payload["title"],
         artist_name=payload["artist_name"],
+        medium=payload.get("medium") or None,
+        disability_experience_context=payload.get("disability_experience_context")
+        or None,
         description_text=payload["description_text"],
         alt_text_description=payload["alt_text_description"],
         artwork_image_url=artwork_image_url,
@@ -114,6 +162,17 @@ def create_contribution():
 def list_uploads():
     records = Upload.query.order_by(Upload.created_at.desc()).all()
     return jsonify([record.to_dict() for record in records])
+
+
+@api.get("/uploads/<int:upload_id>/media/artwork")
+def serve_upload_artwork(upload_id: int):
+    record = Upload.query.get(upload_id)
+    if record is None or not record.artwork_image_data:
+        return jsonify({"error": "Not found"}), 404
+    return Response(
+        record.artwork_image_data,
+        mimetype=record.artwork_image_mime_type or "application/octet-stream",
+    )
 
 
 @api.post("/uploads")
@@ -141,7 +200,11 @@ def create_upload():
 
     if missing:
         return (
-            jsonify({"error": "Missing required fields", "missing_fields": missing}),
+            jsonify({
+                "error": "Missing required fields",
+                "missing_fields": missing
+            }),
+       
             400,
         )
 

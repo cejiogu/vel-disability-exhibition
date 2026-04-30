@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router";
+import { SITE_TITLE } from "../lib/site-metadata";
 
 type SiteNavProps = {
-  title: string;
+  title?: string;
   showLogo?: boolean;
 };
 
-export function SiteNav({ title, showLogo = false }: SiteNavProps) {
+export function SiteNav({ title = SITE_TITLE, showLogo = false }: SiteNavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function closeMenu() {
@@ -41,12 +42,6 @@ export function SiteNav({ title, showLogo = false }: SiteNavProps) {
           </NavLink>
           <NavLink to="/browse-artwork" className="nav-link" onClick={closeMenu}>
             Browse Artwork
-          </NavLink>
-          <NavLink to="/augmented-reality-visitor-activity" className="nav-link" onClick={closeMenu}>
-            Augmented Reality Visitor Activity
-          </NavLink>
-          <NavLink to="/scan" className="nav-link nav-link-scan" onClick={closeMenu}>
-            Scan
           </NavLink>
         </div>
       </div>

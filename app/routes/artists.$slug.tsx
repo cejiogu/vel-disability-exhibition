@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { artists, exhibitionTitle, getArtistBySlug } from "../lib/artists";
@@ -19,10 +19,8 @@ export function meta({ params }: Route.MetaArgs) {
 
 export default function ArtistPage({ params }: Route.ComponentProps) {
   const artist = getArtistBySlug(params.slug);
-  const [activeStep, setActiveStep] = useState(0);
   const [showFullVisualDescription, setShowFullVisualDescription] = useState(false);
   const [showFullStatement, setShowFullStatement] = useState(false);
-  const stepRefs = useRef<Array<HTMLElement | null>>([]);
 
   if (!artist) {
     return (
@@ -51,47 +49,9 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
   }, [artist.slug]);
 
   useEffect(() => {
-    setActiveStep(0);
     setShowFullStatement(false);
     setShowFullVisualDescription(false);
   }, [artist.slug]);
-
-  useEffect(() => {
-    if (!artist.processItems.length) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const stepIndex = Number(
-              (entry.target as HTMLElement).dataset.timelineIndex
-            );
-
-            if (!Number.isNaN(stepIndex)) {
-              setActiveStep(stepIndex);
-            }
-          }
-        });
-      },
-      {
-        root: null,
-        threshold: 0.6,
-        rootMargin: "-20% 0px -35% 0px",
-      }
-    );
-
-    stepRefs.current.forEach((stepElement) => {
-      if (stepElement) {
-        observer.observe(stepElement);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [artist.processItems.length]);
 
   const currentArtistIndex = artists.findIndex(
     (artistItem) => artistItem.slug === artist.slug
@@ -102,8 +62,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
     currentArtistIndex < artists.length - 1
       ? artists[currentArtistIndex + 1]
       : null;
-
-  const hasCreationNotes = Boolean(artist.creationNotes);
 
   return (
     <main className="site-shell">
@@ -126,7 +84,6 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         ) : null}
 
         <div className="audio-shell">
-          <h2 className="hero-audio-heading">Artwork Audio Overview</h2>
           {artist.artworkAudioUrl ? (
             <>
               <audio
@@ -142,10 +99,32 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
             <p className="lede">Audio tour coming soon.</p>
           )}
         </div>
+
+        {artist.interactionStatement || artist.interactionAudioUrl ? (
+          <div className="audio-shell interaction-note-shell">
+            <p className="field-note interaction-note-heading">
+              Interaction Notes
+            </p>
+            {artist.interactionStatement ? (
+              <p className="hero-statement" style={{ marginBottom: "0.8rem" }}>
+                {artist.interactionStatement}
+              </p>
+            ) : null}
+            {artist.interactionAudioUrl ? (
+              <audio
+                controls
+                preload="none"
+                src={artist.interactionAudioUrl}
+                className="audio-player audio-player-hero"
+              >
+                Your browser does not support audio playback.
+              </audio>
+            ) : null}
+          </div>
+        ) : null}
       </header>
 
       <section id="overview" className="panel panel-main-artwork artist-panel-animate">
-        <h2>Main Artwork</h2>
         {artist.slug === "chase-and-connor" && artist.poemEmbedUrl ? (
           <div>
             <div className="embed-frame-wrap">
@@ -156,6 +135,17 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
                 allowFullScreen
               />
             </div>
+            {artist.poemAudioUrl ? (
+              <audio
+                controls
+                preload="none"
+                src={artist.poemAudioUrl}
+                className="audio-player"
+                style={{ marginTop: "1rem" }}
+              >
+                Your browser does not support audio playback.
+              </audio>
+            ) : null}
             {artist.poemSourceUrl ? (
               <div className="hero-actions">
                 <a
@@ -172,7 +162,7 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         ) : artist.slug === "daniel-enriquez" && artist.webglEmbedUrl ? (
           <div>
             <p className="field-note">
-              Explore Daniel's WebGL version directly below.
+              Explore the interactive WebGL environment below.
             </p>
             <div className="webgl-frame-wrap">
               <iframe
@@ -223,7 +213,27 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
         )}
       </section>
 
-      {artist.poemEmbedUrl && artist.slug !== "chase-and-connor" ? (
+      {artist.poemText && artist.slug === "alison-fromme" ? (
+        <section id="poem" className="panel artist-panel-animate">
+          <h2>Poem</h2>
+          <p style={{ whiteSpace: "pre-line", lineHeight: "1.8", color: "#0f2540" }}>
+            {artist.poemText}
+          </p>
+          {artist.poemAudioUrl ? (
+            <>
+              <audio
+                controls
+                preload="none"
+                src={artist.poemAudioUrl}
+                className="audio-player"
+                style={{ marginTop: "1rem" }}
+              >
+                Your browser does not support audio playback.
+              </audio>
+            </>
+          ) : null}
+        </section>
+      ) : artist.poemEmbedUrl && artist.slug !== "chase-and-connor" ? (
         <section id="poem" className="panel artist-panel-animate">
           <h2>Poem Text</h2>
           <div className="embed-frame-wrap">
@@ -246,75 +256,30 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
               </a>
             </div>
           ) : null}
-          <p className="field-note">
-            If the embed does not load, use the link in Additional Material.
-          </p>
         </section>
       ) : null}
 
-      {artist.webglEmbedUrl && artist.slug !== "daniel-enriquez" ? (
-        <section id="webgl" className="panel panel-webgl artist-panel-animate">
-          <h2>Interactive WebGL Environment</h2>
+      {artist.processItems.length > 0 ? (
+        <section id="process" className="panel panel-process-journey artist-panel-animate">
+          <h2>Creation Process</h2>
           <p className="field-note">
-            Explore Daniel's WebGL version directly below.
+            {artist.processLabel ??
+              "Below are photos the artist selected to represent their art piece's creation process."}
           </p>
-          <div className="webgl-frame-wrap">
-            <iframe
-              src={artist.webglEmbedUrl}
-              title={`${artist.title} WebGL environment`}
-              className="webgl-frame"
-              allowFullScreen
-            />
-          </div>
-          {artist.webglOpenUrl ? (
-            <div className="hero-actions">
-              <a
-                href={artist.webglOpenUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="action action-primary"
-              >
-                Open WebGL In New Tab
-              </a>
-            </div>
-          ) : null}
-        </section>
-      ) : null}
-
-      <section id="process" className="panel panel-process-journey artist-panel-animate">
-        <h2>Creation Process Journey</h2>
-        <p className="field-note">
-          Follow the timeline below. Each step shows a process photo with its visual description directly underneath.
-        </p>
-        {artist.processItems.length ? (
-          <>
-            <p className="timeline-progress" aria-live="polite">
-              Step {activeStep + 1} of {artist.processItems.length}
-            </p>
-            <div className="process-timeline" aria-label="Creation process timeline">
-              {artist.processItems.map((item, index) => (
-                <article
-                  key={item.imageUrl}
-                  className="timeline-step"
-                  ref={(element) => {
-                    stepRefs.current[index] = element;
-                  }}
-                  data-timeline-index={index}
-                >
-                  <div className="timeline-step-marker" aria-hidden="true">
-                    {index + 1}
-                  </div>
+          <div className="process-timeline" aria-label="Creation process timeline">
+            {artist.processItems.map((item, index) => (
+              <article key={item.imageUrl} className="timeline-step">
+                <div className="timeline-step-marker" aria-hidden="true">
+                  {index + 1}
+                </div>
                   <div className="timeline-step-card">
-                    <h3>Step {index + 1}</h3>
                     <img
                       src={item.imageUrl}
                       alt={`${artist.title} process photo ${index + 1}`}
                       className="timeline-image"
                       loading="lazy"
                     />
-                    <p className="timeline-label">Visual Description</p>
                     <p>{item.visualDescription}</p>
-                    <p className="timeline-label">Audio</p>
                     {item.audioUrl ? (
                       <audio
                         controls
@@ -328,40 +293,31 @@ export default function ArtistPage({ params }: Route.ComponentProps) {
                       <p className="field-note">Audio coming soon for this step.</p>
                     )}
                   </div>
-                </article>
-              ))}
-            </div>
-          </>
-        ) : (
-          <p className="field-note">Creation-process photos coming soon.</p>
-        )}
-      </section>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {artist.creationNotes || artist.additionalTextAudioUrl ? (
         <section id="notes" className="panel artist-panel-animate">
-          <h2>Creation Notes</h2>
+          <h2>Additional Notes from the Creation Process</h2>
           {artist.creationNotes ? <p>{artist.creationNotes}</p> : null}
           {artist.additionalTextAudioUrl ? (
-            <>
-              <p className="timeline-label">Creation Notes Audio</p>
-              <audio
-                controls
-                preload="none"
-                src={artist.additionalTextAudioUrl}
-                className="audio-player"
-              >
-                Your browser does not support audio playback.
-              </audio>
-            </>
+            <audio
+              controls
+              preload="none"
+              src={artist.additionalTextAudioUrl}
+              className="audio-player"
+            >
+              Your browser does not support audio playback.
+            </audio>
           ) : null}
         </section>
       ) : null}
 
-      {artist.externalLinks?.length && artist.slug !== "chase-and-connor" && artist.slug !== "daniel-enriquez" ? (
-        <section
-          id={hasCreationNotes || artist.additionalTextAudioUrl ? undefined : "notes"}
-          className="panel artist-panel-animate"
-        >
+      {artist.externalLinks?.length && artist.slug !== "chase-and-connor" ? (
+        <section className="panel artist-panel-animate">
           <h2>Additional Material</h2>
           <ul>
             {artist.externalLinks.map((linkItem) => (

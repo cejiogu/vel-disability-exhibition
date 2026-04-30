@@ -3,11 +3,12 @@ import { useState, type FormEvent } from "react";
 
 import { postFormData } from "../lib/api";
 import { SiteNav } from "../components/site-nav";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/upload";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Upload | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content:
@@ -60,8 +61,8 @@ export default function Upload() {
         <p className="eyebrow">Upload Form</p>
         <h1>Upload To The Exhibition</h1>
         <p>
-          Share media and supporting materials that help tell disability-centered
-          stories.
+          Upload is for work created during the exhibition. Add the artwork file
+          and basic contact details, and the media team can process the rest.
         </p>
         <Link to="/" className="action action-secondary">
           Back To Home
@@ -70,6 +71,10 @@ export default function Upload() {
 
       <section className="panel">
         <h2>Your Upload</h2>
+        <p className="field-note">
+          This lighter form is for artwork made on site. AR files are handled
+          separately by the exhibition team.
+        </p>
         <form className="contribution-form" onSubmit={handleSubmit}>
           <label htmlFor="name">Name</label>
           <input

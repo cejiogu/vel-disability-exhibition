@@ -3,11 +3,12 @@ import { useState, type FormEvent } from "react";
 
 import { postFormData } from "../lib/api";
 import { SiteNav } from "../components/site-nav";
+import { SITE_TITLE } from "../lib/site-metadata";
 import type { Route } from "./+types/contribute";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Contribute | Disability Exhibition" },
+    { title: SITE_TITLE },
     {
       name: "description",
       content:
@@ -62,8 +63,8 @@ export default function Contribute() {
         <p className="eyebrow">Contribution Form</p>
         <h1>Contribute To The Exhibition</h1>
         <p>
-          Share your perspective and context. Use the Upload tab for supporting
-          files.
+          Contribute is the pre-exhibition form for people who want their work
+          represented in the exhibition. Use Upload later for work created on site.
         </p>
         <div className="hero-actions">
           <Link to="/upload" className="action action-primary">
