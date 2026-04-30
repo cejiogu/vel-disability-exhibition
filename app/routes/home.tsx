@@ -3,11 +3,6 @@ import { Link } from "react-router";
 import { exhibitionTitle } from "../lib/artists";
 import { SiteNav } from "../components/site-nav";
 
-const exhibitionStatementAudioUrl = new URL(
-  "../../project_details/Updated Exhibition Statement.m4a",
-  import.meta.url
-).href;
-
 export function meta({}: Route.MetaArgs) {
   return [
     { title: exhibitionTitle },
@@ -46,7 +41,7 @@ export default function Home() {
           <audio
             controls
             preload="none"
-            src={exhibitionStatementAudioUrl}
+            src="/project_details/Updated Exhibition Statement.m4a"
             className="audio-player audio-player-hero"
           >
             Your browser does not support audio playback.
